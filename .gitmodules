@@ -1,0 +1,4 @@
+[submodule "src/dotfiles"]
+    path = src/dotfiles
+    url = https://github.com/garretpatten/dotfiles
+
