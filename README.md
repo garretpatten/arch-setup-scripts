@@ -22,38 +22,35 @@ bash src/scripts/master.sh
 
 # Installations
 
-## CLI Tools
+## CLI Tools and Terminal Applications
 - bat
+- clamav
 - curl
+- docker
+- docker-compose
 - exa
 - fastfetch
 - flatpak
 - gh
 - git
-- https
 - htop
+- neovim
 - nmap
+- node
+- npm
 - openvpn
 - semgrep
+- shellcheck
 - src-cli
 - task
+- tmux
 - ufw
+- vim
 - wget
-
-## Applications
-- 1Password
-- Brave
-- Postman
-- Proton VPN
-- Signl
-- Simplenote
-- Spotify
-- Thunderbird
-- Todoist
-- VLC
-- VS Code
+- zsh
 
 # Configurations
+- Fira Code Fonts
 - Git Credential Helper
 - Home Directory
 - Neovim
@@ -61,3 +58,23 @@ bash src/scripts/master.sh
 - Vim
 - VS Code
 - Z-shell
+
+## Desktop Applications
+- 1Password
+- Brave
+- Burp Suite
+- Notion
+- Postman
+- Proton VPN
+- Signl Messenger
+- Sourcegraph
+- Spotify
+- Thunderbird
+- Todoist
+- VLC Media Player
+- VS Code
+- ZAProxy
+
+# Other
+- Blackarch Tools
+- Hacking Wordlists
