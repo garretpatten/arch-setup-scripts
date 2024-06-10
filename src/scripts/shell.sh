@@ -8,9 +8,13 @@ if [[ -f "/usr/bin/zsh" ]]; then
     sudo chsh -s "$(which zsh)"
 fi
 
-# Install nerdfonts
-if [[ ! -f "/usr/share/fonts/TTF/MesloLGS-NF-Regular.ttf" ]]; then
-    yay -S ttf-meslo-nerd-font-powerlevel10k --noconfirm
+# Install dependencies for powerlevel10k
+if [[ ! -d "/usr/share/fonts/awesome-terminal-fonts/" ]]; then
+    sudo pacman -S awesome-terminal-fonts --noconfirm
+fi
+
+if [[ ! -d "/usr/share/fonts/OTF/" ]]; then
+sudo pacman -S powerline-fonts --nonconfirm
 fi
 
 # Install powerlevel10k
