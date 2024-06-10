@@ -54,13 +54,10 @@ bash src/scripts/master.sh
 - VS Code
 
 # Configurations
-- Firewall
 - Git Credential Helper
 - Home Directory
+- Neovim
 - Taskwarrior
-- Vim & Neovim
-- Zsh (oh-my-zsh)
-
----
-
-*Disclaimer: Code under active development*
+- Vim
+- VS Code
+- Z-shell
