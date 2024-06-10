@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cliTools=("bat" "curl" "exa" "git" "htop" "neovim" "openvpn" "terminator" "tmux" "vim" "wget" "zsh")
+cliTools=("bat" "curl" "exa" "fastfetch" "git" "htop" "neovim" "openvpn" "terminator" "tmux" "vim" "wget" "zsh")
 for cliTool in "${cliTools[@]}"; do
     if [[ -d "/usr/bin/$cliTool" ]]; then
         echo "$cliTool is already installed."
@@ -10,9 +10,6 @@ for cliTool in "${cliTools[@]}"; do
         sudo pacman -S "$cliTool" --noconfirm
     fi
 done
-
-# fastfetch
-sudo pacman -S fastfetch -noconfirm
 
 ### Additional package managers ###
 
