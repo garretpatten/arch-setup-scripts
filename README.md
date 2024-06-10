@@ -50,9 +50,11 @@ bash src/scripts/master.sh
 - zsh
 
 # Configurations
+- Alacritty
 - Fira Code Fonts
 - Git Credential Helper
 - Home Directory
+- Meslo Nerd Fonts
 - Neovim
 - Taskwarrior
 - Vim
@@ -61,6 +63,7 @@ bash src/scripts/master.sh
 
 ## Desktop Applications
 - 1Password
+- Alacritty
 - Brave
 - Burp Suite
 - Notion

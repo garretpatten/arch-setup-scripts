@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cliTools=("bat" "curl" "exa" "fastfetch" "git" "htop" "neovim" "openvpn" "terminator" "tmux" "vim" "wget" "zsh")
+cliTools=("alacritty" "bat" "curl" "exa" "fastfetch" "git" "htop" "neovim" "openvpn" "terminator" "tmux" "vim" "wget" "zsh")
 for cliTool in "${cliTools[@]}"; do
     if [[ -d "/usr/bin/$cliTool" ]]; then
         echo "$cliTool is already installed."
