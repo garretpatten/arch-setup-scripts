@@ -5,9 +5,7 @@ workingDirectory=$1
 ### Authentication ###
 
 # 1Password
-if [[ -f "/usr/bin/1password" ]]; then
-    echo "1Password is already installed."
-else
+if [[ ! -f "/usr/bin/1password" ]]; then
     cd "$HOME/Downloads" || return
 
     # 1Password desktop app
@@ -31,19 +29,15 @@ fi
 
 # TODO: Add hardware keys auth for system
 
-### Defense ###
+### Defensive Secuity ###
 
 # Clam AV
-if [[ -f "/usr/bin/clamscan" ]]; then
-    echo "Clam Anti-Virus is already installed."
-else
+if [[ ! -f "/usr/bin/clamscan" ]]; then
     sudo pacman -S clamav --noconfirm
 fi
 
 # Firewall
-if [[ -f "/usr/sbin/ufw" ]]; then
-    echo "Firewall is already installed."
-else
+if [[ ! -f "/usr/sbin/ufw" ]]; then
     sudo pacman -S ufw --noconfirm
 fi
 
@@ -52,16 +46,12 @@ sudo ufw enable
 ### Privacy ###
 
 # Proton VPN, Proton VPN CLI, and system tray icon
-if [[ -f "/usr/bin/protonvpn" ]]; then
-    echo "Proton VPN is already installed."
-else
+if [[ ! -f "/usr/bin/protonvpn" ]]; then
     yay -S protonvpn --noconfirm
     sudo pacman -S libappindicator-gtk3 gnome-shell-extension-appindicator --noconfirm
 fi
 
 # Signal Messenger
-if [[ -d "/usr/bin/signal-desktop" ]]; then
-    echo "Signal is already installed."
-else
+if [[ ! -d "/usr/bin/signal-desktop" ]]; then
     sudo pacman -S signal-desktop --noconfirm
 fi

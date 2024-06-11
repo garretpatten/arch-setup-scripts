@@ -15,21 +15,34 @@ if [[ ! -f "$HOME/.gitconfig" ]]; then
     git config --global pull.rebase false
 fi
 
-# Neovim config
-mkdir -p "$HOME/.config/nvim/"
-cp "$workingDirectory/src/dotfiles/nvim/init.vim" "$HOME/config/nvim/init.vim"
-
 # Vim config
-cp "$workingDirectory/src/dotfiles/vim/.vimrc" "$HOME/.vimrc"
+if [[ ! -f "$HOME/.vimrc" ]]; then
+    cp "$workingDirectory/src/dotfiles/vim/.vimrc" "$HOME/.vimrc"
+fi
+
+# Neovim config
+if [[ ! -f "$HOME/.config/nvim/init.vim" ]]; then
+    mkdir -p "$HOME/.config/nvim/"
+    cp "$workingDirectory/src/dotfiles/nvim/init.vim" "$HOME/config/nvim/init.vim"
+fi
+
+# Packer installation
+git clone --depth 1 https://github.com/wbthomason/packer.nvim \
+"$HOME/.local/share/nvim/site/pack/packer/start/packer.nvim"
 
 ### Runtimes ###
 
-# Node.js
-sudo pacman -S --noconfirm nodejs
-sudo pacman -S --noconfirm npm
+# Node.js && npm
+if [[ ! -f "/usr/bin/node" ]]; then
+    sudo pacman -S nodejs --noconfirm
+    sudo pacman -S npm --noconfirm
+fi
 
-# Python
-sudo pacman -S --noconfirm python3
+# Python & pip
+if [[ ! -f "/usr/bin/python" ]]; then
+    sudo pacman -S python3 --noconfirm
+    sudo pacman -S python-pip --noconfirm
+fi
 
 ### Frameworks ###
 
@@ -40,7 +53,7 @@ else
     sudo npm install -g @vue/cli
 fi
 
-### Dev Tooling ###
+### Dev Tools ###
 
 # Docker and Docker-Compose
 sudo pacman -S gnome-terminal --noconfirm
@@ -48,18 +61,17 @@ sudo pacman -S docker --noconfirm
 
 sudo pacman -S docker-compose --noconfirm
 docker image pull fedora
-docker image pull ubuntu
+docker image pull kalilinux/kali-rolling
 
 # GitHub CLI
-if [[ -f "/usr/local/bin/gh" ]]; then
-    echo "gh is already installed."
-else
-    # TODO: Install GitHub CLI AUR package
-    # https://archlinux.org/packages/extra/x86_64/github-cli/
+if [[ ! -f "/usr/local/bin/gh" ]]; then
+    yay -S github-cli-git --noconfirm
 fi
 
 # Postman
-yay -S --noconfirm postman-bin
+if [[ ! -f "/usr/bin/postman" ]]; then
+    yay -S postman-bin --noconfirm
+fi
 
 # Semgrep
 if [[ -f "$HOME/.local/bin/semgrep" ]]; then
@@ -72,46 +84,13 @@ fi
 sudo pacman -S shellcheck --noconfirm
 
 # Sourcegraph
-if [[ -f "/usr/local/bin/src" ]]; then
-    echo "Sourcegraph CLI is already installed."
-else
+if [[ ! -f "/usr/local/bin/src" ]]; then
     curl -L https://sourcegraph.com/.api/src-cli/src_linux_amd64 -o "/usr/local/bin/src"
     chmod +x "/usr/local/bin/src"
 fi
 
 # VS Code
-if [[ -f "/usr/bin/code" ]]; then
-    echo "VS Code is already installed."
-else
-    sudo pacman -S --noconfirm code
-    cp "$workingDirectory/src/config-files/vs-code/settings.json" "$HOME/.config/'Code - OSS'/User/settings.json"
-fi
-
-### Fonts ###
-
-# Fira Code
-if [[ -d "/usr/share/fonts/FiraCode/" ]]; then
-    echo "Fira Code is already installed."
-    if [[ "$packageManager" = "pacman" ]]; then
-        cd "$HOME/Downloads" || return
-
-        git clone https://aur.archlinux.org/ttf-firacode.git
-        cd ttf-firacode || return
-        makepkg -sri --noconfirm
-
-        cd "$workingDirectory" || return
-    fi
-fi
-
-### Package Managers ###
-
-# Packer installation
-git clone --depth 1 https://github.com/wbthomason/packer.nvim \
-"$HOME/.local/share/nvim/site/pack/packer/start/packer.nvim"
-
-# Pip
-if [[ -f "/usr/bin/pip" || -f "/usr/bin/python-pip" ]]; then
-    echo "python-pip is already installed."
-else
-    sudo pacman -S --noconfirm python-pip
+if [[ ! -f "/usr/bin/code" ]]; then
+    sudo pacman -S code --noconfirm
+    cp "$workingDirectory/src/dotfiles/vs-code/settings.json" "$HOME/.config/'Code - OSS'/User/settings.json"
 fi

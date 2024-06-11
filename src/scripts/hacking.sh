@@ -20,24 +20,16 @@ sudo ./strap.sh
 cd "$workingDirectory" || return
 
 # Burp Suite
-if [[ -f "/usr/bin/burpsuite" ]]; then
-    echo "Burp Suite is already installed."
-else
-    cd "$HOME/AUR/" || return
-
-    git clone https://aur.archlinux.org/burpsuite.git
-    cd burpsuite || return
-    makepkg -sri --noconfirm
-
-    cd "$workingDirectory" || return
+if [[ ! -f "/usr/bin/burpsuite" ]]; then
+    yay -S burpsuite --noconfirm
 fi
 
 # Network Mapper
-if [[ -f "/usr/bin/nmap" ]]; then
-    echo "Network Mapper is already installed."
-else
+if [[ ! -f "/usr/bin/nmap" ]]; then
     sudo pacman -S nmap --noconfirm
 fi
 
 # ZAP
-sudo pacman -S zaproxy --noconfirm
+if [[ ! -f "/usr/bin/zaproxy" ]]; then
+    sudo pacman -S zaproxy --noconfirm
+fi
