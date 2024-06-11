@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Final system update
+sudo pacman -Syu --noconfirm && yay -Yc --noconfirm
+
 workingDirectory=$1
 
 printf "\n\n============================================================================\n\n"

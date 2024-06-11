@@ -15,21 +15,6 @@ if [[ ! -f "$HOME/.gitconfig" ]]; then
     git config --global pull.rebase false
 fi
 
-# Vim config
-if [[ ! -f "$HOME/.vimrc" ]]; then
-    cp "$workingDirectory/src/dotfiles/vim/.vimrc" "$HOME/.vimrc"
-fi
-
-# Neovim config
-if [[ ! -f "$HOME/.config/nvim/init.vim" ]]; then
-    mkdir -p "$HOME/.config/nvim/"
-    cp "$workingDirectory/src/dotfiles/nvim/init.vim" "$HOME/config/nvim/init.vim"
-fi
-
-# Packer installation
-git clone --depth 1 https://github.com/wbthomason/packer.nvim \
-"$HOME/.local/share/nvim/site/pack/packer/start/packer.nvim"
-
 ### Runtimes ###
 
 # Node.js && npm
@@ -87,10 +72,4 @@ sudo pacman -S shellcheck --noconfirm
 if [[ ! -f "/usr/local/bin/src" ]]; then
     curl -L https://sourcegraph.com/.api/src-cli/src_linux_amd64 -o "/usr/local/bin/src"
     chmod +x "/usr/local/bin/src"
-fi
-
-# VS Code
-if [[ ! -f "/usr/bin/code" ]]; then
-    sudo pacman -S code --noconfirm
-    cp "$workingDirectory/src/dotfiles/vs-code/settings.json" "$HOME/.config/'Code - OSS'/User/settings.json"
 fi

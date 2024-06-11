@@ -30,11 +30,6 @@ if [[ ! -f "/usr/bin/task" ]]; then
     task add Download needed files from Proton Drive project:setup priority:L
 fi
 
-# Thunderbird
-if [[ ! -f "/usr/bin/thunderbird" ]]; then
-    sudo pacman -S thunderbird --noconfirm
-fi
-
 # Timeshift
 if [[ ! -f "/usr/bin/timeshift" ]]; then
     sudo pacman -S timeshift --noconfirm

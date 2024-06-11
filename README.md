@@ -23,6 +23,7 @@ bash src/scripts/master.sh
 # Installations
 
 ## CLI Tools and Terminal Applications
+- base-devel
 - bat
 - clamav
 - curl
@@ -51,10 +52,8 @@ bash src/scripts/master.sh
 
 # Configurations
 - Alacritty
-- Fira Code Fonts
 - Git Credential Helper
 - Home Directory
-- Meslo Nerd Fonts
 - Neovim
 - Taskwarrior
 - Vim
@@ -66,13 +65,11 @@ bash src/scripts/master.sh
 - Alacritty
 - Brave
 - Burp Suite
-- Notion
 - Postman
 - Proton VPN
 - Signl Messenger
 - Sourcegraph
 - Spotify
-- Thunderbird
 - Todoist
 - VLC Media Player
 - VS Code

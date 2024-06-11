@@ -2,37 +2,36 @@
 
 workingDirectory=$(pwd)
 
-# Initial system update
-sudo pacman -Syu --noconfirm && yay -Yc --noconfirm
+bash "$workingDirectory/src/scripts/pre-install.sh"
 
 # Home directory customization
-sh "$workingDirectory/src/scripts/organizeHome.sh"
+bash "$workingDirectory/src/scripts/organizeHome.sh"
 
 # CLI tools
-sh "$workingDirectory/src/scripts/cli.sh"
+bash "$workingDirectory/src/scripts/cli.sh"
 
 # Browser
-sh "$workingDirectory/src/scripts/web.sh"
-
-# Security and privacy utilities
-bash "$workingDirectory/src/scripts/security.sh" "$workingDirectory"
-
-# Productivity programs
-bash "$workingDirectory/src/scripts/productivity.sh" "$workingDirectory"
-
-# Development environment setup
-bash "$workingDirectory/src/scripts/dev.sh" "$workingDirectory"
-
-# Shell configuration
-zsh "$workingDirectory/src/scripts/shell.sh" "$workingDirectory"
-
-# Penetration testing tools and wordlists
-bash "$workingDirectory/src/scripts/hacking.sh" "$workingDirectory"
+bash "$workingDirectory/src/scripts/web.sh"
 
 # Streaming and video applications
 bash "$workingDirectory/src/scripts/media.sh"
 
-# Final system update
-sudo pacman -Syu --noconfirm && yay -Yc --noconfirm
+# Productivity programs
+bash "$workingDirectory/src/scripts/productivity.sh" "$workingDirectory"
+
+# Security and privacy utilities
+bash "$workingDirectory/src/scripts/security.sh" "$workingDirectory"
+
+# IDE setup
+bash "$workingDirectory/src/scripts/ide.sh" "$workingDirectory"
+
+# Dev tools
+bash "$workingDirectory/src/scripts/dev.sh" "$workingDirectory"
+
+# Penetration testing tools and wordlists
+bash "$workingDirectory/src/scripts/hacking.sh" "$workingDirectory"
+
+# Shell configuration
+zsh "$workingDirectory/src/scripts/shell.sh" "$workingDirectory"
 
 bash "$workingDirectory/src/scripts/post-install.sh" "$workingDirectory"
