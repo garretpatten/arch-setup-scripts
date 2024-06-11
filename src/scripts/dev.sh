@@ -1,7 +1,5 @@
 #!/bin/bash
 
-workingDirectory=$1
-
 ### Configuration ###
 
 # Git config

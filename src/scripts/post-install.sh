@@ -23,4 +23,5 @@ printf "\n\n====================================================================
 printf "Cheers -- system setup is now complete.\n\r"
 
 # Refresh shell
+# shellcheck disable=SC1091
 source "$HOME/.zshrc"

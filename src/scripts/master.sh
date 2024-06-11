@@ -2,7 +2,7 @@
 
 workingDirectory=$(pwd)
 
-bash "$workingDirectory/src/scripts/pre-install.sh"
+bash "$workingDirectory/src/scripts/pre-install.sh" "$workingDirectory"
 
 # Home directory customization
 bash "$workingDirectory/src/scripts/organizeHome.sh"
@@ -26,7 +26,7 @@ bash "$workingDirectory/src/scripts/security.sh" "$workingDirectory"
 bash "$workingDirectory/src/scripts/ide.sh" "$workingDirectory"
 
 # Dev tools
-bash "$workingDirectory/src/scripts/dev.sh" "$workingDirectory"
+bash "$workingDirectory/src/scripts/dev.sh"
 
 # Penetration testing tools and wordlists
 bash "$workingDirectory/src/scripts/hacking.sh" "$workingDirectory"

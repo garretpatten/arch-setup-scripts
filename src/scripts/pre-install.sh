@@ -1,5 +1,7 @@
 #!/bin/bash
 
+workingDirectory=$1
+
 # Initial system update
 sudo pacman -Syu --noconfirm && yay -Yc --noconfirm
 
