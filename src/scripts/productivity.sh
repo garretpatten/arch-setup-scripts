@@ -14,7 +14,7 @@ if [[ ! -f "/usr/bin/task" ]]; then
     echo "yes" | task
 
     # Update ~/.taskrc
-    cp "$workingDirectory/src/dotfiles/taskwarrior/taskrcUpdates.txt" "$HOME/.taskrc"
+    cp "$workingDirectory/src/dotfiles/taskwarrior/.taskrc-additions" >> "$HOME/.taskrc"
 
     # Add manual setup tasks
     task add Remove unneeded update commands from .zshrc project:setup priority:H

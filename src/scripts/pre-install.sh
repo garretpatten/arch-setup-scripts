@@ -6,7 +6,7 @@ workingDirectory=$1
 sudo pacman -Syu --noconfirm && yay -Yc --noconfirm
 
 if [[ ! -f "/usr/bin/yay" ]]; then
-    sudo pacman -S base-devel --nonconfirm
+    sudo pacman -S base-devel --noconfirm
     sudo pacman -S git --noconfirm
 
     cd "$HOME/Downloads" || return
