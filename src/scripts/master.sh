@@ -31,7 +31,6 @@ bash "$workingDirectory/src/scripts/dev.sh"
 # Penetration testing tools and wordlists
 bash "$workingDirectory/src/scripts/hacking.sh" "$workingDirectory"
 
-# Shell configuration
 zsh "$workingDirectory/src/scripts/shell.sh" "$workingDirectory"
 
 bash "$workingDirectory/src/scripts/post-install.sh" "$workingDirectory"

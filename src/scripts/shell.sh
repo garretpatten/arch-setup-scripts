@@ -49,7 +49,7 @@ if [[ ! -d "$HOME/.config/alacritty/" ]]; then
     mkdir -p "$HOME/.config/alacritty"
     git clone https://github.com/alacritty/alacritty-theme "$HOME/.config/alacritty/"
     touch "$HOME/.config/alacritty/alacritty.toml"
-    cp "$workingDirectory/src/dotfiles/alacritty.toml" "$HOME/.config/alacritty/alacritty.toml"
+    cp "$workingDirectory/src/dotfiles/alacritty/alacritty.toml" "$HOME/.config/alacritty/alacritty.toml"
 fi
 
 # Update ~/.zshrc

@@ -21,4 +21,5 @@ printf \
 printf "\n\n============================================================================\n\n\r"
 
 printf "Cheers -- system setup is now complete.\n\r"
-printf "Restart shell to complete powerlevel10k configuration.\n"
+printf "Log out and log back in to complete shell change.\n"
+printf "When logged back in, restart shell to complete powerlevel10k configuration.\n"
