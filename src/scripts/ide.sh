@@ -18,5 +18,6 @@ fi
 # VS Code
 if [[ ! -f "/usr/bin/code" ]]; then
     sudo pacman -S code --noconfirm
+    code "$HOME"
     cp "$workingDirectory/src/dotfiles/vs-code/settings.json" "$HOME/.config/'Code - OSS'/User/settings.json"
 fi
