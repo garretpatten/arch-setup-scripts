@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/zsh
 
 workingDirectory=$1
 
@@ -22,7 +22,7 @@ fi
 
 # Powerline Fonts
 if [[ ! -d "/usr/share/fonts/OTF/" ]]; then
-    sudo pacman -S powerline-fonts --nonconfirm
+    sudo pacman -S powerline-fonts --noconfirm
 fi
 
 ### Install powerlevel10k ###
@@ -34,12 +34,12 @@ fi
 
 # Zsh Autosuggestions
 if [[ ! -d "/usr/share/zsh/plugins/zsh-autosuggestions/" ]]; then
-    sudo pacman -S zsh-autosuggestions --nonconfirm
+    sudo pacman -S zsh-autosuggestions --noconfirm
 fi
 
 # Zsh Syntax Highlighting
-if [[ ! -d "/usr/share/zsh/plugins/zsh-syntax-highlighting" ]]; then
-    sudo pacman -S zsh-syntax-highlighting --nonconfirm
+if [[ ! -d "/usr/share/zsh/plugins/zsh-syntax-highlighting/" ]]; then
+    sudo pacman -S zsh-syntax-highlighting --noconfirm
 fi
 
 ### Terminal Configuration ###
