@@ -21,7 +21,4 @@ printf \
 printf "\n\n============================================================================\n\n\r"
 
 printf "Cheers -- system setup is now complete.\n\r"
-
-# Refresh shell
-# shellcheck disable=SC1091
-source "$HOME/.zshrc"
+printf "Restart shell to complete powerlevel10k configuration.\n"
