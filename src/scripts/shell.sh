@@ -25,9 +25,9 @@ if [[ ! -d "/usr/share/fonts/OTF/" ]]; then
     sudo pacman -S powerline-fonts --noconfirm
 fi
 
-### Install powerlevel10k ###
-if [[ ! -f "/usr/share/zsh-theme-powerlevel10k/powerlevel10k.zsh-theme" ]]; then
-    yay -S zsh-theme-powerlevel10k-git --noconfirm
+### Install oh-my-posh ###
+if [[ ! -f "/usr/bin/oh-my-posh" ]]; then
+    yay -S oh-my-posh --noconfirm
 fi
 
 ### Zsh Plugins ###
@@ -53,4 +53,4 @@ if [[ ! -d "$HOME/.config/alacritty/" ]]; then
 fi
 
 # Update ~/.zshrc
-cp "$workingDirectory/src/dotfiles/zsh/.zshrc" "$HOME/.zshrc"
+cp "$workingDirectory/src/dotfiles/oh-my-posh/.zshrc" "$HOME/.zshrc"
