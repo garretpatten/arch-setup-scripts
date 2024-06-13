@@ -20,6 +20,10 @@ if [[ ! -d "/usr/share/fonts/FiraCode/" ]]; then
     yay -S ttf-firacode --noconfirm
 fi
 
+if [[ ! -d "/usr/share/fonts/TTF/" ]]; then
+    yay -S ttf-meslo-nerd --noconfirm
+fi
+
 # Powerline Fonts
 if [[ ! -d "/usr/share/fonts/OTF/" ]]; then
     sudo pacman -S powerline-fonts --noconfirm

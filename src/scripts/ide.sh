@@ -13,11 +13,5 @@ if [[ ! -f "$HOME/.config/nvim/init.vim" ]]; then
     cp "$workingDirectory/src/dotfiles/nvim/init.vim" "$HOME/.config/nvim/init.vim"
     git clone --depth 1 https://github.com/wbthomason/packer.nvim \
     "$HOME/.local/share/nvim/site/pack/packer/start/packer.nvim"
-fi
-
-# VS Code
-if [[ ! -f "/usr/bin/code" ]]; then
-    sudo pacman -S code --noconfirm
-    code "$HOME"
-    cp "$workingDirectory/src/dotfiles/vs-code/settings.json" "$HOME/.config/'Code - OSS'/User/settings.json"
+    sudo pacman -S tree-sitter-cli --noconfirm
 fi

@@ -20,9 +20,10 @@ if [[ ! -f "/usr/bin/task" ]]; then
     task add Remove unneeded update commands from .zshrc project:setup priority:H
     task add Update .zshrc project:dev priority:H
 
-    task add Install notion project:PWAs priority:M
+    task add Install Notion project:PWAs priority:M
     task add Install Proton Drive project:PWAs priority:M
     task add Install Proton Mail project:PWAs priority:M
+    task add Install Todoist project:PWAs priority:M
     task add Sign into and sync Brave project:setup priority:M
     task add Configure 1Password project:setup priority:M
 
