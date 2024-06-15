@@ -40,6 +40,7 @@ bash src/scripts/master.sh
 - node
 - npm
 - openvpn
+- ripgrep
 - semgrep
 - shellcheck
 - src-cli
