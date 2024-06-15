@@ -31,6 +31,7 @@ bash src/scripts/master.sh
 - docker-compose
 - exa
 - fastfetch
+- fd
 - flatpak
 - gh
 - git
