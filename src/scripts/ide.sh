@@ -8,9 +8,9 @@ if [[ ! -f "$HOME/.vimrc" ]]; then
 fi
 
 # Neovim setup
-if [[ ! -f "$HOME/.config/nvim/init.vim" ]]; then
-    mkdir -p "$HOME/.config/nvim/"
-    cp "$workingDirectory/src/dotfiles/nvim/init.vim" "$HOME/.config/nvim/init.vim"
+if [[ ! -d "$HOME/.config/nvim/" ]]; then
+    mkdir -p "$HOME/.config/"
+    cp -r "$workingDirectory/src/dotfiles/nvim/" "$HOME/.config/nvim/"
     git clone --depth 1 https://github.com/wbthomason/packer.nvim \
     "$HOME/.local/share/nvim/site/pack/packer/start/packer.nvim"
     sudo pacman -S tree-sitter-cli --noconfirm
