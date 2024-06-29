@@ -5,16 +5,21 @@
 
 ## How to Use
 ```
-# Clone repository and submodules
+# Clone repository
 git clone https://github.com/garretpatten/arch-setup-scripts
-git submodule init
-git submodule update
 
-# Checkout the root of the project
+# Checkout repository
 cd arch-setup-scripts
 
-# Make scripts executable
-sudo chmod +x src/scripts/
+# Initialize submodules
+git submodule init
+git submodule update --remote --recursive
+cd src/dotfiles
+git submodule init
+git submodule update --remote --recursive
+
+# Return to the root of the project
+cd ../..
 
 # Run master script
 bash src/scripts/master.sh
