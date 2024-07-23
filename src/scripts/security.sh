@@ -29,7 +29,7 @@ fi
 
 # TODO: Add hardware keys auth for system
 
-### Defensive Secuity ###
+### Defensive Security ###
 
 # Clam AV
 if [[ ! -f "/usr/bin/clamscan" ]]; then
