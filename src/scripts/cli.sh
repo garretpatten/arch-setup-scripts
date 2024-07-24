@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cliTools=("alacritty" "bat" "curl" "exa" "eza" "fastfetch" "fd" "htop" "jq" "neovim" "openvpn" "rigrep" "terminator" "tmux" "vim" "wget" "zsh")
+cliTools=("alacritty" "bat" "curl" "exa" "eza" "fastfetch" "fd" "htop" "jq" "less" "neovim" "openvpn" "rigrep" "terminator" "tmux" "vim" "wget" "zsh")
 for cliTool in "${cliTools[@]}"; do
     if [[ ! -f "/usr/bin/$cliTool" ]]; then
         sudo pacman -S "$cliTool" --noconfirm

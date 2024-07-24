@@ -41,6 +41,7 @@ bash src/scripts/master.sh
 - gh
 - git
 - htop
+- less
 - neovim
 - nmap
 - node
