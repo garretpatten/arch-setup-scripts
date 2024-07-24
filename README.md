@@ -11,7 +11,7 @@ git clone https://github.com/garretpatten/arch-setup-scripts
 # Checkout repository
 cd arch-setup-scripts
 
-# Initialize submodules
+# Initialize and update submodules
 git submodule init
 git submodule update --remote --recursive
 cd src/dotfiles
