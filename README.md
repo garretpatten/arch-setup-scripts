@@ -43,6 +43,7 @@ bash src/scripts/master.sh
 - htop
 - imagemagick
 - less
+- man
 - neovim
 - nmap
 - node
