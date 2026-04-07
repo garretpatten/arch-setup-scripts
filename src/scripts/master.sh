@@ -4,6 +4,9 @@ workingDirectory=$(pwd)
 
 bash "$workingDirectory/src/scripts/pre-install.sh" "$workingDirectory"
 
+# Init dotfiles submodules (e.g. taskwarrior themes) per src/dotfiles/setup.sh
+bash "$workingDirectory/src/dotfiles/setup.sh"
+
 # Home directory customization
 bash "$workingDirectory/src/scripts/organizeHome.sh"
 

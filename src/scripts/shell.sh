@@ -1,6 +1,7 @@
 #!/bin/bash
 
 workingDirectory=$1
+dotfilesRoot=$(cd "$workingDirectory/src/dotfiles" && pwd)
 
 # Change root and user shell to zsh
 if [[ -f "/usr/bin/zsh" ]]; then
@@ -53,8 +54,27 @@ if [[ ! -d "$HOME/.config/alacritty/" ]]; then
     mkdir -p "$HOME/.config/alacritty"
     git clone https://github.com/alacritty/alacritty-theme "$HOME/.config/alacritty/"
     touch "$HOME/.config/alacritty/alacritty.toml"
-    cp "$workingDirectory/src/dotfiles/alacritty/alacritty.toml" "$HOME/.config/alacritty/alacritty.toml"
+fi
+cp "$dotfilesRoot/config/alacritty/alacritty.toml" "$HOME/.config/alacritty/alacritty.toml"
+
+# Oh My Posh themes (referenced from ~/.zshrc / OS fragments)
+mkdir -p "$HOME/.config/oh-my-posh/themes"
+cp -a "$dotfilesRoot/config/oh-my-posh/themes/." "$HOME/.config/oh-my-posh/themes/"
+
+# Zellij
+mkdir -p "$HOME/.config/zellij"
+cp "$dotfilesRoot/config/zellij/config.kdl" "$HOME/.config/zellij/config.kdl"
+
+# Tmux
+if [[ ! -f "$HOME/.tmux.conf" ]]; then
+    cp "$dotfilesRoot/home/.tmux.conf" "$HOME/.tmux.conf"
 fi
 
-# Update ~/.zshrc
-cp "$workingDirectory/src/dotfiles/oh-my-posh/.zshrc" "$HOME/.zshrc"
+# Bash (optional; keeps same pattern as dotfiles repo)
+if [[ ! -f "$HOME/.bashrc" ]]; then
+    cp "$dotfilesRoot/home/.bashrc" "$HOME/.bashrc"
+fi
+
+# Primary zsh entry + cache DOTFILES so OS-specific fragments in home/zsh/ load
+cp "$dotfilesRoot/home/.zshrc" "$HOME/.zshrc"
+printf '%s\n' "$dotfilesRoot" > "$HOME/.dotfiles_path"

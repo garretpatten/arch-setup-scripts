@@ -14,12 +14,12 @@ cd arch-setup-scripts
 # Initialize and update submodules
 git submodule init
 git submodule update --remote --recursive
-cd src/dotfiles
-git submodule init
-git submodule update --remote --recursive
 
-# Return to the root of the project
-cd ../..
+# Dotfiles: init nested submodules (taskwarrior themes, etc.)
+( cd src/dotfiles && bash setup.sh )
+
+# Return to the root of the project (if you changed directory)
+cd "$(git rev-parse --show-toplevel)"
 
 # Run master script
 bash src/scripts/master.sh
@@ -61,10 +61,11 @@ bash src/scripts/master.sh
 - zsh
 
 # Configurations
-- Alacritty
+Dotfiles follow a **`config/`** (XDG app config) vs **`home/`** (e.g. `.zshrc`) layout; `master.sh` copies/symlinks targets and writes **`~/.dotfiles_path`** so `home/.zshrc` can source **`home/zsh/*.zsh`**.
+- Alacritty, Oh My Posh themes, Zellij
 - Git Credential Helper
 - Home Directory
-- Neovim
+- Neovim (lazy.nvim)
 - Taskwarrior
 - Vim
 - VS Code

@@ -13,8 +13,10 @@ if [[ ! -f "/usr/bin/task" ]]; then
     # Handle first prompt (to create config file)
     echo "yes" | task
 
-    # Update ~/.taskrc
-    cat "$workingDirectory/src/dotfiles/taskwarrior/.taskrc-additions" >> "$HOME/.taskrc"
+    # Update ~/.taskrc (optional additions file may be absent in newer dotfiles trees)
+    if [[ -f "$workingDirectory/src/dotfiles/taskwarrior/.taskrc-additions" ]]; then
+        cat "$workingDirectory/src/dotfiles/taskwarrior/.taskrc-additions" >> "$HOME/.taskrc"
+    fi
 
     # Add manual setup tasks
     task add Remove unneeded update commands from .zshrc project:setup priority:H
