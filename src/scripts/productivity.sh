@@ -1,6 +1,7 @@
 #!/bin/bash
 
 workingDirectory=$1
+dotfilesDirectory="$workingDirectory/src/dotfiles"
 
 # Taskwarrior
 if [[ ! -f "/usr/bin/task" ]]; then
@@ -8,13 +9,15 @@ if [[ ! -f "/usr/bin/task" ]]; then
 
     # Add custom themes
     mkdir -p "$HOME/.task/themes/"
-    cp -r "$workingDirectory/src/dotfiles/taskwarrior/themes/" "$HOME/.task/themes/"
+    cp -r "$dotfilesDirectory/taskwarrior/themes/" "$HOME/.task/themes/"
 
     # Handle first prompt (to create config file)
     echo "yes" | task
 
     # Update ~/.taskrc
-    cat "$workingDirectory/src/dotfiles/taskwarrior/.taskrc-additions" >> "$HOME/.taskrc"
+    if [[ -f "$dotfilesDirectory/taskwarrior/.taskrc-additions" ]]; then
+        cat "$dotfilesDirectory/taskwarrior/.taskrc-additions" >> "$HOME/.taskrc"
+    fi
 
     # Add manual setup tasks
     task add Remove unneeded update commands from .zshrc project:setup priority:H
