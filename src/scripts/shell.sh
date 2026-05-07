@@ -1,6 +1,7 @@
 #!/bin/bash
 
 workingDirectory=$1
+dotfilesDirectory="$workingDirectory/src/dotfiles"
 
 # Change root and user shell to zsh
 if [[ -f "/usr/bin/zsh" ]]; then
@@ -52,9 +53,11 @@ fi
 if [[ ! -d "$HOME/.config/alacritty/" ]]; then
     mkdir -p "$HOME/.config/alacritty"
     git clone https://github.com/alacritty/alacritty-theme "$HOME/.config/alacritty/"
-    touch "$HOME/.config/alacritty/alacritty.toml"
-    cp "$workingDirectory/src/dotfiles/alacritty/alacritty.toml" "$HOME/.config/alacritty/alacritty.toml"
 fi
+cp "$dotfilesDirectory/config/alacritty/alacritty.toml" "$HOME/.config/alacritty/alacritty.toml"
 
 # Update ~/.zshrc
-cp "$workingDirectory/src/dotfiles/oh-my-posh/.zshrc" "$HOME/.zshrc"
+cp "$dotfilesDirectory/home/.zshrc" "$HOME/.zshrc"
+
+# Cache dotfiles path so ~/.zshrc can source the right OS-specific zsh file.
+printf '%s\n' "$dotfilesDirectory" > "$HOME/.dotfiles_path"
