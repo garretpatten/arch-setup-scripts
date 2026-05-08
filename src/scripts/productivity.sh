@@ -1,48 +1,28 @@
 #!/bin/bash
 
-workingDirectory=$1
-dotfilesDirectory="$workingDirectory/src/dotfiles"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck disable=SC1091
+source "$SCRIPT_DIR/utils.sh"
 
-# Taskwarrior
-if [[ ! -f "/usr/bin/task" ]]; then
-    sudo pacman -S task --noconfirm
+update_pacman_cache
 
-    # Add custom themes
-    mkdir -p "$HOME/.task/themes/"
-    cp -r "$dotfilesDirectory/taskwarrior/themes/" "$HOME/.task/themes/"
+libreoffice_packages=(
+    "libreoffice-fresh"
+    "breeze-icons"
+)
+install_pacman_packages "${libreoffice_packages[@]}"
 
-    # Handle first prompt (to create config file)
-    echo "yes" | task
+install_aur_packages "zoom"
 
-    # Update ~/.taskrc
-    if [[ -f "$dotfilesDirectory/taskwarrior/.taskrc-additions" ]]; then
-        cat "$dotfilesDirectory/taskwarrior/.taskrc-additions" >> "$HOME/.taskrc"
-    fi
-
-    # Add manual setup tasks
-    task add Remove unneeded update commands from .zshrc project:setup priority:H
-    task add Update .zshrc project:dev priority:H
-
-    task add Install Notion project:PWAs priority:M
-    task add Install Proton Drive project:PWAs priority:M
-    task add Install Proton Mail project:PWAs priority:M
-    task add Install Todoist project:PWAs priority:M
-    task add Sign into and sync Brave project:setup priority:M
-    task add Configure 1Password project:setup priority:M
-
-    task add Take a snapshot of system project:setup priority:L
-    task add Download needed files from Proton Drive project:setup priority:L
+if command -v flatpak >/dev/null 2>&1 && flatpak remote-info flathub >/dev/null 2>&1; then
+    flatpak install -y flathub org.standardnotes.standardnotes 2>>"$ERROR_LOG_FILE" || true
 fi
 
-# Timeshift
-if [[ ! -f "/usr/bin/timeshift" ]]; then
-    sudo pacman -S timeshift --noconfirm
-fi
+productivity_packages=(
+    "keepassxc"
+    "redshift"
+    "flameshot"
+)
+install_pacman_packages "${productivity_packages[@]}"
 
-# Todoist
-if [[ ! -f "/usr/bin/todoist" ]]; then
-    cd "$HOME/AppImages" || return
-    wget https://todoist.com/linux_app/appimage
-    sudo mv appimage /usr/bin/todoist
-    cd "$workingDirectory" || return
-fi
+install_aur_packages "balena-etcher"

@@ -1,11 +1,23 @@
 #!/bin/bash
 
-# Spotify
-if [[ ! -d "/usr/bin/spotify-launcher" ]]; then
-    sudo pacman -S spotify-launcher --noconfirm
-fi
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck disable=SC1091
+source "$SCRIPT_DIR/utils.sh"
 
-# VLC
-if [[ ! -f "/usr/bin/vlc" ]]; then
-    sudo pacman -S vlc --noconfirm
-fi
+update_pacman_cache
+
+install_aur_packages "brave-bin"
+
+install_pacman_packages "vlc"
+
+install_pacman_packages "spotify-launcher"
+
+multimedia_packages=(
+    "ffmpeg"
+    "gst-plugins-bad"
+    "gst-plugins-ugly"
+    "gst-libav"
+)
+install_pacman_packages "${multimedia_packages[@]}"
+
+install_aur_packages "ttf-ms-fonts"

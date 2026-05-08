@@ -1,17 +1,23 @@
 #!/bin/bash
 
-# Remove unneeded directories.
-directoriesToRemove=("Public" "Templates")
-for directoryToRemove in "${directoriesToRemove[@]}"; do
-    if [[ -d "$HOME/$directoryToRemove/" ]]; then
-        rmdir "$HOME/$directoryToRemove"
-    fi
-done
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck disable=SC1091
+source "$SCRIPT_DIR/utils.sh"
 
-# Add needed directories.
-directoriesToCreate=("AppImages" "AUR" "Books" "Games" "Hacking" "Projects" "Writing")
-for directoryToCreate in "${directoriesToCreate[@]}"; do
-    if [[ ! -d "$HOME/$directoryToCreate/" ]]; then
-        mkdir "$HOME/$directoryToCreate"
-    fi
-done
+remove_empty_directory "$HOME/Music"
+remove_empty_directory "$HOME/Public"
+remove_empty_directory "$HOME/Templates"
+
+ensure_directory "$HOME/AppImages"
+ensure_directory "$HOME/Hacking"
+ensure_directory "$HOME/Projects"
+
+ensure_directory "$HOME/Projects/opensource"
+ensure_directory "$HOME/Projects/personal"
+
+if [[ -d "$HOME/Scripts" ]]; then
+    chmod 755 "$HOME/Scripts" 2>>"$ERROR_LOG_FILE" || true
+fi
+if [[ -d "$HOME/Hacking" ]]; then
+    chmod 700 "$HOME/Hacking" 2>>"$ERROR_LOG_FILE" || true
+fi

@@ -1,57 +1,57 @@
 #!/bin/bash
 
-workingDirectory=$1
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck disable=SC1091
+source "$SCRIPT_DIR/utils.sh"
 
-### Authentication ###
+update_pacman_cache
 
-# 1Password
-if [[ ! -f "/usr/bin/1password" ]]; then
-    cd "$HOME/Downloads" || return
+defense_tools=(
+    "ufw"
+    "openvpn"
+)
+install_pacman_packages "${defense_tools[@]}"
 
-    # 1Password desktop app
-    curl -sS https://downloads.1password.com/linux/keys/1password.asc | gpg --import
-    git clone https://aur.archlinux.org/1password.git
-    cd 1password || return
-    makepkg -sri --noconfirm
+sudo ufw --force reset 2>>"$ERROR_LOG_FILE" || true
+sudo ufw default deny incoming 2>>"$ERROR_LOG_FILE" || true
+sudo ufw default allow outgoing 2>>"$ERROR_LOG_FILE" || true
+sudo ufw allow ssh 2>>"$ERROR_LOG_FILE" || true
+sudo ufw --force enable 2>>"$ERROR_LOG_FILE" || true
 
-    # 1Password CLI
-    ARCH="amd64" && \
-    wget "https://cache.agilebits.com/dist/1P/op2/pkg/v2.23.0/op_linux_${ARCH}_v2.23.0.zip" -O op.zip && \
-    unzip -d op op.zip && \
-    sudo mv op/op /usr/local/bin && \
-    rm -r op.zip op && \
-    sudo groupadd -f onepassword-cli && \
-    sudo chgrp onepassword-cli /usr/local/bin/op && \
-    sudo chmod g+s /usr/local/bin/op
+protonvpn_packages=(
+    "proton-vpn-gtk-app"
+    "libappindicator-gtk3"
+    "gnome-shell-extension-appindicator"
+)
+install_aur_packages "${protonvpn_packages[@]}"
 
-    cd "$workingDirectory" || return
+install_aur_packages "proton-pass-bin"
+
+proton_pass_cli="$TEMP_DIR/proton-pass-cli"
+proton_pass_cli_url=$(curl -s https://api.github.com/repos/protonpass/cli/releases/latest 2>>"$ERROR_LOG_FILE" | grep "browser_download_url.*linux-amd64" | cut -d '"' -f 4)
+if [[ -n "$proton_pass_cli_url" ]]; then
+    download_file_safe "$proton_pass_cli_url" "$proton_pass_cli"
+    if [[ -f "$proton_pass_cli" ]] && [[ -s "$proton_pass_cli" ]]; then
+        chmod +x "$proton_pass_cli" 2>>"$ERROR_LOG_FILE" || true
+        sudo mv "$proton_pass_cli" /usr/local/bin/protonpass 2>>"$ERROR_LOG_FILE" || true
+    fi
 fi
 
-# TODO: Add hardware keys auth for system
+install_pacman_packages "signal-desktop"
 
-### Defensive Security ###
+security_tools=(
+    "nmap"
+    "perl-image-exiftool"
+    "zaproxy"
+)
+install_pacman_packages "${security_tools[@]}"
 
-# Clam AV
-if [[ ! -f "/usr/bin/clamscan" ]]; then
-    sudo pacman -S clamav --noconfirm
+ensure_directory "$HOME/Hacking"
+
+if [[ ! -d "$HOME/Hacking/PayloadsAllTheThings" ]]; then
+    clone_repository_safe "https://github.com/swisskyrepo/PayloadsAllTheThings" "$HOME/Hacking/PayloadsAllTheThings"
 fi
 
-# Firewall
-if [[ ! -f "/usr/sbin/ufw" ]]; then
-    sudo pacman -S ufw --noconfirm
-fi
-
-sudo ufw enable
-
-### Privacy ###
-
-# Proton VPN, Proton VPN CLI, and system tray icon
-if [[ ! -f "/usr/bin/protonvpn" ]]; then
-    yay -S protonvpn --noconfirm
-    sudo pacman -S libappindicator-gtk3 gnome-shell-extension-appindicator --noconfirm
-fi
-
-# Signal Messenger
-if [[ ! -d "/usr/bin/signal-desktop" ]]; then
-    sudo pacman -S signal-desktop --noconfirm
+if [[ ! -d "$HOME/Hacking/SecLists" ]]; then
+    clone_repository_safe "https://github.com/danielmiessler/SecLists" "$HOME/Hacking/SecLists"
 fi

@@ -1,36 +1,16 @@
 #!/bin/bash
 
-workingDirectory=$(pwd)
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck disable=SC1091
+source "$SCRIPT_DIR/utils.sh"
 
-bash "$workingDirectory/src/scripts/pre-install.sh" "$workingDirectory"
-
-# Home directory customization
-bash "$workingDirectory/src/scripts/organizeHome.sh"
-
-# CLI tools
-bash "$workingDirectory/src/scripts/cli.sh"
-
-# Browser
-bash "$workingDirectory/src/scripts/web.sh"
-
-# Streaming and video applications
-bash "$workingDirectory/src/scripts/media.sh"
-
-# Productivity programs
-bash "$workingDirectory/src/scripts/productivity.sh" "$workingDirectory"
-
-# Security and privacy utilities
-bash "$workingDirectory/src/scripts/security.sh" "$workingDirectory"
-
-# IDE setup
-bash "$workingDirectory/src/scripts/ide.sh" "$workingDirectory"
-
-# Dev tools
-bash "$workingDirectory/src/scripts/dev.sh"
-
-# Penetration testing tools and wordlists
-bash "$workingDirectory/src/scripts/hacking.sh" "$workingDirectory"
-
-zsh "$workingDirectory/src/scripts/shell.sh" "$workingDirectory"
-
-bash "$workingDirectory/src/scripts/post-install.sh" "$workingDirectory"
+bash "$SCRIPT_DIR/pre-install.sh" 2>>"$ERROR_LOG_FILE" || log_error "Failed to execute pre-install.sh"
+bash "$SCRIPT_DIR/organizeHome.sh" 2>>"$ERROR_LOG_FILE" || log_error "Failed to execute organizeHome.sh"
+bash "$SCRIPT_DIR/system-config.sh" 2>>"$ERROR_LOG_FILE" || log_error "Failed to execute system-config.sh"
+bash "$SCRIPT_DIR/cli.sh" 2>>"$ERROR_LOG_FILE" || log_error "Failed to execute cli.sh"
+bash "$SCRIPT_DIR/dev.sh" 2>>"$ERROR_LOG_FILE" || log_error "Failed to execute dev.sh"
+bash "$SCRIPT_DIR/media.sh" 2>>"$ERROR_LOG_FILE" || log_error "Failed to execute media.sh"
+bash "$SCRIPT_DIR/productivity.sh" 2>>"$ERROR_LOG_FILE" || log_error "Failed to execute productivity.sh"
+bash "$SCRIPT_DIR/security.sh" 2>>"$ERROR_LOG_FILE" || log_error "Failed to execute security.sh"
+bash "$SCRIPT_DIR/shell.sh" 2>>"$ERROR_LOG_FILE" || log_error "Failed to execute shell.sh"
+bash "$SCRIPT_DIR/post-install.sh" 2>>"$ERROR_LOG_FILE" || log_error "Failed to execute post-install.sh"
