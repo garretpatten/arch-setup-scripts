@@ -33,19 +33,19 @@ git clone https://github.com/garretpatten/arch-setup-scripts
 cd arch-setup-scripts
 ```
 
-1. **Update submodules** (for dotfiles)
+2. **Update submodules** (for dotfiles)
 
 ```bash
 git submodule update --init --remote --recursive src/dotfiles/
 ```
 
-1. **Make scripts executable**
+3. **Make scripts executable**
 
 ```bash
-chmod +x src/scripts/*.sh
+chmod +x src/scripts/*.sh .github/scripts/*.sh
 ```
 
-1. **Run the complete setup**
+4. **Run the complete setup**
 
 ```bash
 ./src/scripts/master.sh

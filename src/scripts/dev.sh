@@ -71,7 +71,8 @@ if command -v flatpak >/dev/null 2>&1 && flatpak remote-info flathub >/dev/null 
     flatpak install -y flathub com.getpostman.Postman 2>>"$ERROR_LOG_FILE" || true
 fi
 
-install_pacman_packages "python-semgrep"
+# Official repos do not ship semgrep; AUR provides a binary package.
+install_aur_packages "semgrep-bin"
 
 sg_binary="$TEMP_DIR/sg"
 download_file_safe "https://sourcegraph.com/.api/src-cli/src_linux_amd64" "$sg_binary"
