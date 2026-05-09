@@ -1,24 +1,32 @@
 #!/bin/bash
 
-# Final system update
-sudo pacman -Syu --noconfirm && yay -Yc --noconfirm
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck disable=SC1091
+source "$SCRIPT_DIR/utils.sh"
 
-workingDirectory=$1
+sudo pacman -Syu --noconfirm 2>>"$ERROR_LOG_FILE" || true
 
-printf "\n\n============================================================================\n\n"
+if command -v yay >/dev/null 2>&1; then
+    yay -Yc --noconfirm 2>>"$ERROR_LOG_FILE" || true
+fi
 
-cat "$workingDirectory/src/assets/wolf.txt"
+if command -v docker >/dev/null 2>&1; then
+    sudo systemctl enable docker.service 2>>"$ERROR_LOG_FILE" || true
+    sudo systemctl start docker.service 2>>"$ERROR_LOG_FILE" || true
+    sudo usermod -aG docker "$USER" 2>>"$ERROR_LOG_FILE" || true
+fi
 
-printf "\n\n============================================================================\n\n"
+if command -v ufw >/dev/null 2>&1; then
+    sudo ufw --force enable 2>>"$ERROR_LOG_FILE" || true
+fi
 
-printf \
-"Run the following to enable Docker daemon on startup:
-    sudo systemctl start docker.service
-    sudo systemctl enable docker.service
-    sudo usermod -aG docker %s
-    newgrp docker\r" "$USER"
+wolf_art_file="$PROJECT_ROOT/src/assets/wolf.txt"
+if [[ -f "$wolf_art_file" ]]; then
+    echo
+    echo "============================================================================"
+    cat "$wolf_art_file" 2>/dev/null || true
+    echo "============================================================================"
+    echo
+fi
 
-printf "\n\n============================================================================\n\n\r"
-
-printf "Cheers -- system setup is now complete.\n\r"
-printf "Log out and log back in to complete shell change.\n"
+echo "Setup completed. Check $ERROR_LOG_FILE for any errors."
