@@ -14,4 +14,5 @@ echo 'runner ALL=(ALL) NOPASSWD: ALL' >/etc/sudoers.d/runner
 chmod 0440 /etc/sudoers.d/runner
 chown -R runner:runner /workspace
 
-su -s /bin/bash runner -c 'cd /workspace/src/scripts && bash master.sh || true'
+su -s /bin/bash runner -c \
+  'export ARCH_SETUP_CI=1; cd /workspace/src/scripts && bash master.sh || true'

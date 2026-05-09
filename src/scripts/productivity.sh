@@ -25,4 +25,7 @@ productivity_packages=(
 )
 install_pacman_packages "${productivity_packages[@]}"
 
-install_aur_packages "balena-etcher"
+# AUR conflicts / flaky deps; skip in Docker CI (ARCH_SETUP_CI=1).
+if [[ "${ARCH_SETUP_CI:-}" != "1" ]]; then
+    install_aur_packages "balena-etcher"
+fi

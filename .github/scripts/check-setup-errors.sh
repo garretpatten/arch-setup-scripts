@@ -1,51 +1,20 @@
 #!/usr/bin/env bash
-# Expect cwd = repo root (e.g. GitHub Actions working-directory).
+# Expect cwd = repo root. Only fails on explicit log_error() lines, not raw stderr
+# (pacman/curl/go/docker/sysctl/ufw/etc.) copied into setup_errors.log.
 set -euo pipefail
 
 ERROR_LOG="setup_errors.log"
 [[ -f "$ERROR_LOG" && -s "$ERROR_LOG" ]] || exit 0
 
-noise=(
-  'warning: .* is up to date'
-  'skipping'
-  'Synchronizing package databases'
-  'there is nothing to do'
-  '::'
-  'chsh: PAM: Authentication failure'
-  'Password:'
-  'systemctl restart'
-  '^Cloning into'
-  '^Updating files:'
-  '^Resolving '
-  '^Connecting to '
-  '^HTTP request sent'
-  '^Length:'
-  '^Saving to:'
-  '^--[0-9]{4}-[0-9]{2}-[0-9]{2}'
-  '^[0-9]{4}-[0-9]{2}-[0-9]{2}.*saved'
-  '^[[:space:]]*[0-9]+K'
-  'done\.$'
-  '^[[:space:]]*100%'
-  '^npm notice'
-  '% Total'
-  '% Received'
-  '% Xferd'
-  'Average Speed'
-  'Dload  Upload'
-  'Time    Time     Time  Current'
-  '--:--:--'
-)
-IFS='|'
-noise_regex="(${noise[*]})"
-unset IFS
+# Matches: echo "[$(date ...)] ERROR: ..." >> ERROR_LOG_FILE (utils.sh log_error)
+logged_errors=$(mktemp)
+grep -E '^\[[0-9]{4}-[0-9]{2}-[0-9]{2} [[:digit:]]{2}:[[:digit:]]{2}:[[:digit:]]{2}\] ERROR:' \
+  "$ERROR_LOG" >"$logged_errors" || true
 
-filtered=$(mktemp)
-grep -v -E "$noise_regex" "$ERROR_LOG" | grep -v '^[[:space:]]*$' >"$filtered" || true
-
-if [[ -s "$filtered" ]]; then
+if [[ -s "$logged_errors" ]]; then
   echo '❌ Errors found:'
-  cat "$filtered"
-  rm -f "$filtered"
+  cat "$logged_errors"
+  rm -f "$logged_errors"
   exit 1
 fi
-rm -f "$filtered"
+rm -f "$logged_errors"
