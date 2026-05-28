@@ -1,8 +1,7 @@
 #!/bin/bash
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-# shellcheck disable=SC1091
-source "$SCRIPT_DIR/utils.sh"
+# shellcheck source=../utils.sh
+source "$(dirname "$0")/../utils.sh"
 
 update_pacman_cache
 
@@ -11,12 +10,6 @@ defense_tools=(
     "openvpn"
 )
 install_pacman_packages "${defense_tools[@]}"
-
-sudo ufw --force reset 2>>"$ERROR_LOG_FILE" || true
-sudo ufw default deny incoming 2>>"$ERROR_LOG_FILE" || true
-sudo ufw default allow outgoing 2>>"$ERROR_LOG_FILE" || true
-sudo ufw allow ssh 2>>"$ERROR_LOG_FILE" || true
-sudo ufw --force enable 2>>"$ERROR_LOG_FILE" || true
 
 protonvpn_packages=(
     "proton-vpn-gtk-app"

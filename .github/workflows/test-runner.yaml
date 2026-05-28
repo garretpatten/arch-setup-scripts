@@ -19,7 +19,11 @@ jobs:
           submodules: recursive
 
       - name: Make scripts executable
-        run: chmod +x src/scripts/*.sh .github/scripts/*.sh
+        run: |
+          chmod +x src/scripts/*.sh \
+            src/scripts/install/*.sh \
+            src/scripts/config/*.sh \
+            .github/scripts/*.sh
 
       - name: Pull Arch image and run setup
         run: |
