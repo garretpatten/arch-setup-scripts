@@ -9,7 +9,7 @@ jobs:
     # yamllint disable-line rule:line-length
     uses: garretpatten/quality-checks/.github/workflows/quality-checks.yaml@master
     with:
-      markdownlint_run: false
+      markdownlint_run: true
       prettier_run: true
       shellcheck_run: true
       yamllint_run: true
