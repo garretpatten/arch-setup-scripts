@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# GNOME/session defaults, home layout, UFW defaults, submodule dotfiles, shell.
+# Desktop/session defaults (GNOME Shell when applicable), home layout, UFW defaults, submodule dotfiles, shell.
 
 # shellcheck source=utils.sh
 source "$(dirname "$0")/utils.sh"

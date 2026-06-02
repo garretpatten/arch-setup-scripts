@@ -10,7 +10,7 @@ shared helpers, and a `src/dotfiles` git submodule. Changes should stay **idempo
 | ---------------------- | -------------------------------------------------------------------------------------------------------------------- |
 | `src/scripts/`         | `utils.sh`, `master.sh`, `run-install.sh`, `run-config.sh`                                                           |
 | `src/scripts/install/` | pacman/AUR/Flatpak, third-party installers, repo clones (no `gsettings`/dotfiles)                                    |
-| `src/scripts/config/`  | GNOME defaults, home layout, UFW policy after packages, targeted dotfile copies into `~`, `~/.dotfiles_path`, `chsh` |
+| `src/scripts/config/`  | Desktop defaults (GNOME Shell when applicable), home layout, UFW policy after packages, targeted dotfile copies into `~`, `~/.dotfiles_path`, `chsh` |
 | `src/scripts/utils.sh` | Helpers, `SCRIPTS_DIR`, paths, logging, safe copy/download                                                           |
 | `src/dotfiles/`        | Submodule — [garretpatten/dotfiles](https://github.com/garretpatten/dotfiles)                                        |
 | `src/assets/`          | Completion banner ASCII (`arch.txt`; Fastfetch-derived)                                                              |
@@ -39,7 +39,8 @@ Scripts in **`install/`** and **`config/`**:
 4. Non-fatal style where the rest of the repo does: `|| true`, `2>>"$ERROR_LOG_FILE"`, **`log_error`**
    from orchestrators only for stage failures.
 
-5. **Headless-safe**: **`gsettings`** only behind **`gsettings_ok`**;
+5. **Headless-safe**: **`gsettings`** only behind **`gsettings_ok`**; GNOME Shell-only
+   **`gsettings`** behind **`desktop_is_gnome`** (Hyprland and CI skip them);
    **`config/security.sh`** exits quietly if **`ufw`** is not installed (**`npm run config`**
    alone on a minimal box).
 
@@ -56,7 +57,8 @@ belong upstream in **dotfiles**; bump copies here when a new subtree is mandator
 
 ## Product and safety constraints
 
-- **Night Light** (`config/system-config.sh`) conflicts with **Redshift** (`install/productivity.sh`); pick one policy.
+- **Night Light** (`config/system-config.sh`, GNOME only) conflicts with **Redshift** (`install/productivity.sh`); on Hyprland use Redshift only.
+- **Hyprland**: set **`ARCH_SETUP_DESKTOP=hyprland`** when auto-detection fails (TTY before compositor install); do not install **`gnome-shell-extension-appindicator`** unless **`desktop_is_gnome`**.
 - **Security**: Verified downloads, **`download_file_safe`**, least-privilege dirs, **`config/security.sh`** **`ufw`** defaults.
 - **User impact**: Logout/login for **`docker`** group / default shell / GNOME tweaks.
 - **CI**: Set **`ARCH_SETUP_CI=1`** to skip flaky AUR targets (e.g. balena-etcher) in Docker.
@@ -72,7 +74,7 @@ belong upstream in **dotfiles**; bump copies here when a new subtree is mandator
 | Task                       | Edit                                                                                              |
 | -------------------------- | ------------------------------------------------------------------------------------------------- |
 | Packages/installers/clones | Matching **`install/*.sh`**                                                                       |
-| GNOME/session/user layout  | **`config/system-config.sh`**, **`organizeHome.sh`**, **`install/pre-install.sh`** as appropriate |
+| GNOME/Hyprland/session/user layout | **`config/system-config.sh`**, **`organizeHome.sh`**, **`install/pre-install.sh`** as appropriate |
 | Firewall                   | `config/security.sh` (policy) plus `install/security.sh` (install `ufw` first)                    |
 | Dotfile deploy             | **`config/dev.sh`** / **`config/shell.sh`**                                                       |
 | Shared logic               | **`utils.sh`**                                                                                    |

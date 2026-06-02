@@ -14,8 +14,10 @@ install_pacman_packages "${defense_tools[@]}"
 protonvpn_packages=(
     "proton-vpn-gtk-app"
     "libappindicator-gtk3"
-    "gnome-shell-extension-appindicator"
 )
+if desktop_is_gnome; then
+    protonvpn_packages+=("gnome-shell-extension-appindicator")
+fi
 install_aur_packages "${protonvpn_packages[@]}"
 
 install_aur_packages "proton-pass-bin"

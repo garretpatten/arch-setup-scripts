@@ -12,7 +12,7 @@ Use [GitHub Issues](https://github.com/garretpatten/arch-setup-scripts/issues) w
 
 - Branch from **`master`**, focused scope per PR.
 - When scripts change, keep installs idempotent (skip work if keys, dirs, or targets already satisfy the goal).
-- **Headless-safe**: **`gsettings`** only behind **`gsettings_ok`**; do not require a GNOME session in CI paths.
+- **Headless-safe**: **`gsettings`** only behind **`gsettings_ok`**; GNOME Shell-only steps behind **`desktop_is_gnome`** (Hyprland/CI skip them); do not require a GNOME session in CI paths.
 - **Dotfiles submodule**: substantive config belongs in **`src/dotfiles`** upstream unless the provisioning script owns one-off machine behavior — note submodule bumps explicitly when you change **`src/dotfiles`**.
 
 ### Checks (from repo root)

@@ -50,7 +50,7 @@
 ## Overview
 
 Arch Setup Scripts automate a **baseline engineering stack**: security tooling, shells and terminals,
-development runtimes (Node, Docker, Neovim, and peers), GNOME ergonomics where a desktop session exists,
+development runtimes (Node, Docker, Neovim, and peers), GNOME or Hyprland-friendly desktop defaults,
 and a pinned **dotfiles** submodule for editor and tmux parity across machines. Scripts are tuned for clarity in
 reviews and predictable behavior in **Arch Docker** CI.
 
@@ -74,7 +74,8 @@ reviews and predictable behavior in **Arch Docker** CI.
 
 ### Prerequisites
 
-- Arch Linux or Arch-based distribution (EndeavourOS, Manjaro, etc.)
+- **Arch Linux or Arch-based distribution** (EndeavourOS, Manjaro, etc.)
+- **GNOME, Hyprland, or headless/TTY** — GNOME Shell-only steps are skipped on Hyprland automatically
 - Internet connection
 - Sudo privileges
 
@@ -252,10 +253,14 @@ Oh My Posh binary + theme stash under **`/usr/share/oh-my-posh/themes`** when em
 
 #### ⚙️ **Desktop & system** (`config/system-config.sh`)
 
-- **GNOME** (logged-in Desktop / D-Bus): dark mode, animations, clocks, scrolling, Nautilus, screenshots, Dash to Dock (**when schema exists**), Night Light, lock/privacy, search providers.
-- **sudo**: **`AllowGuest=false`** hint in **`gdm`**, **`logind`** lid snippet, sysctl TCP keepalive drop-in.
+- **GTK / shared gsettings** (when schemas and D-Bus exist): dark mode, clocks, peripherals, Nautilus, screenshots — applies on Hyprland when those schemas are installed.
+- **GNOME Shell only** (auto-detected, or **`ARCH_SETUP_DESKTOP=gnome`**): Dash to Dock, Night Light, lock/privacy, search providers. Skipped on Hyprland — use **Redshift** from **`install/productivity.sh`** instead.
+- **Hyprland**: no GNOME Shell packages or extensions are required; **`install/security.sh`** omits **`gnome-shell-extension-appindicator`** unless GNOME Shell is the target desktop.
+- **sudo**: **`AllowGuest=false`** in **`gdm`** / **`sddm`** when present, **`logind`** lid snippet, sysctl TCP keepalive drop-in.
 
-Minimal/CI runners without GNOME skip **`gsettings`** safely.
+Minimal/CI runners without a desktop skip **`gsettings`** and GNOME-only steps safely.
+
+Set **`ARCH_SETUP_DESKTOP=hyprland`** or **`ARCH_SETUP_DESKTOP=gnome`** when auto-detection is wrong (for example first run from a TTY before your compositor packages are installed).
 
 #### 💻 **Editor & Git prefs** (`config/dev.sh`)
 
@@ -288,13 +293,17 @@ After installation, check:
 ## ⚠️ Post-Installation Notes
 
 1. **Restart Required**: Log out and back in for shell and group changes
-1. **GNOME / desktop**: Some `config/system-config.sh` preferences apply fully after
-   re-login or when running the script from an active desktop session
+1. **GNOME / desktop**: Run provisioning from a terminal inside your session, or
+   expect a logout/reboot for some changes. **`system-config.sh`** does not restart
+   **`systemd-logind`** while a graphical session is active (restarting it logs you out).
+   Lid-switch settings from a first-time drop-in apply after reboot if you were logged in.
+1. **GNOME / gsettings**: Night Light and other preferences apply when the script runs
+   with a live D-Bus session (`gsettings_ok`); re-login if you ran headless first.
 1. **Docker**: User added to docker group (logout required for effect)
 1. **Firewall**: UFW enabled with SSH access allowed
-1. **Night Light vs Redshift**: If you use GNOME Night Light from
-   `config/system-config.sh`, disable or uninstall Redshift from `install/productivity.sh` to
-   avoid conflicting color temperature
+1. **Night Light vs Redshift**: On **GNOME**, Night Light from **`config/system-config.sh`**
+   conflicts with **Redshift** from **`install/productivity.sh`** — pick one. On **Hyprland**, use **Redshift**
+   (Night Light gsettings are not applied).
 1. **Manual Setup**: Some applications (like Proton Pass, ProtonVPN) may require
    additional configuration
 
@@ -332,6 +341,17 @@ newgrp docker
 # Manually change shell
 chsh -s $(which zsh)
 # Then log out and back in
+```
+
+**Black screen, logout during setup, or frozen terminal after login:**
+
+Older runs restarted **`systemd-logind`** on every **`system-config.sh`** invocation,
+which ends the GNOME session. If the default shell is Zsh and the terminal hangs,
+switch to a TTY (**Ctrl+Alt+F3**), then restore Bash or fix **`~/.zshrc`** (for example
+comment out **`pass-cli`** / Proton Pass lines until Pass is configured):
+
+```bash
+chsh -s /bin/bash
 ```
 
 ### Getting Help
