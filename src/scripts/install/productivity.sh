@@ -13,10 +13,6 @@ install_pacman_packages "${libreoffice_packages[@]}"
 
 install_aur_packages "zoom"
 
-if command -v flatpak >/dev/null 2>&1 && flatpak remote-info flathub >/dev/null 2>&1; then
-    flatpak install -y flathub org.standardnotes.standardnotes 2>>"$ERROR_LOG_FILE" || true
-fi
-
 productivity_packages=(
     "keepassxc"
     "redshift"
