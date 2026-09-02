@@ -14,6 +14,11 @@ if [[ -d "$DOTFILES_ROOT/config" ]]; then
     copy_directory_safe "$DOTFILES_ROOT/config/alacritty" "$HOME/.config/alacritty"
     copy_directory_safe "$DOTFILES_ROOT/config/kitty" "$HOME/.config/kitty"
     copy_directory_safe "$DOTFILES_ROOT/config/zellij" "$HOME/.config/zellij"
+    copy_directory_safe "$DOTFILES_ROOT/config/lazygit" "$HOME/.config/lazygit"
+    copy_directory_safe "$DOTFILES_ROOT/config/opencode" "$HOME/.config/opencode"
+    copy_directory_safe "$DOTFILES_ROOT/config/pip" "$HOME/.config/pip"
+    copy_directory_safe "$DOTFILES_ROOT/config/uv" "$HOME/.config/uv"
+    copy_directory_safe "$DOTFILES_ROOT/config/yazi" "$HOME/.config/yazi"
 fi
 
 if [[ -d "$DOTFILES_ROOT/home" ]]; then
@@ -35,7 +40,12 @@ if [[ -d "$githooks_dir" ]] && ! git config --global core.hooksPath >/dev/null 2
 fi
 
 if [[ ! -f "$HOME/.gitconfig" ]]; then
-    git config --global credential.helper store 2>>"$ERROR_LOG_FILE" || true
+    credential_helper="/usr/bin/git-credential-libsecret"
+    if [[ -x "$credential_helper" ]]; then
+        git config --global credential.helper "$credential_helper" 2>>"$ERROR_LOG_FILE" || true
+    else
+        git config --global credential.helper store 2>>"$ERROR_LOG_FILE" || true
+    fi
     git config --global http.postBuffer 157286400 2>>"$ERROR_LOG_FILE" || true
     git config --global pack.window 1 2>>"$ERROR_LOG_FILE" || true
     git config --global user.email "garret.patten@proton.me" 2>>"$ERROR_LOG_FILE" || true

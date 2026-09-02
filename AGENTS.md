@@ -6,15 +6,15 @@ shared helpers, and a `src/dotfiles` git submodule. Changes should stay **idempo
 
 ## Repository layout
 
-| Path                   | Purpose                                                                                                              |
-| ---------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| `src/scripts/`         | `utils.sh`, `master.sh`, `run-install.sh`, `run-config.sh`                                                           |
-| `src/scripts/install/` | pacman/AUR/Flatpak, third-party installers, repo clones (no `gsettings`/dotfiles)                                    |
+| Path                   | Purpose                                                                                                                                              |
+| ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `src/scripts/`         | `utils.sh`, `master.sh`, `run-install.sh`, `run-config.sh`                                                                                           |
+| `src/scripts/install/` | pacman/AUR/Flatpak, third-party installers, repo clones (no `gsettings`/dotfiles)                                                                    |
 | `src/scripts/config/`  | Desktop defaults (GNOME Shell when applicable), home layout, UFW policy after packages, targeted dotfile copies into `~`, `~/.dotfiles_path`, `chsh` |
-| `src/scripts/utils.sh` | Helpers, `SCRIPTS_DIR`, paths, logging, safe copy/download                                                           |
-| `src/dotfiles/`        | Submodule — [garretpatten/dotfiles](https://github.com/garretpatten/dotfiles)                                        |
-| `src/assets/`          | Completion banner ASCII (`arch.txt`; Fastfetch-derived)                                                              |
-| `.github/workflows/`   | CI: `master.sh` in Arch Docker + quality workflows                                                                   |
+| `src/scripts/utils.sh` | Helpers, `SCRIPTS_DIR`, paths, logging, safe copy/download                                                                                           |
+| `src/dotfiles/`        | Submodule — [garretpatten/dotfiles](https://github.com/garretpatten/dotfiles)                                                                        |
+| `src/assets/`          | Completion banner ASCII (`arch.txt`; Fastfetch-derived)                                                                                              |
+| `.github/workflows/`   | CI: `master.sh` in Arch Docker + quality workflows                                                                                                   |
 
 ### Orchestration
 
@@ -71,13 +71,13 @@ belong upstream in **dotfiles**; bump copies here when a new subtree is mandator
 
 ## Making changes
 
-| Task                       | Edit                                                                                              |
-| -------------------------- | ------------------------------------------------------------------------------------------------- |
-| Packages/installers/clones | Matching **`install/*.sh`**                                                                       |
+| Task                               | Edit                                                                                              |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------- |
+| Packages/installers/clones         | Matching **`install/*.sh`**                                                                       |
 | GNOME/Hyprland/session/user layout | **`config/system-config.sh`**, **`organizeHome.sh`**, **`install/pre-install.sh`** as appropriate |
-| Firewall                   | `config/security.sh` (policy) plus `install/security.sh` (install `ufw` first)                    |
-| Dotfile deploy             | **`config/dev.sh`** / **`config/shell.sh`**                                                       |
-| Shared logic               | **`utils.sh`**                                                                                    |
+| Firewall                           | `config/security.sh` (policy) plus `install/security.sh` (install `ufw` first)                    |
+| Dotfile deploy                     | **`config/dev.sh`** / **`config/shell.sh`**                                                       |
+| Shared logic                       | **`utils.sh`**                                                                                    |
 
 ## Commits and PRs
 

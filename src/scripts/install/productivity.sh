@@ -17,6 +17,8 @@ productivity_packages=(
     "keepassxc"
     "redshift"
     "flameshot"
+    "gnome-shell-extensions"
+    "gnome-tweaks"
 )
 install_pacman_packages "${productivity_packages[@]}"
 
@@ -24,3 +26,5 @@ install_pacman_packages "${productivity_packages[@]}"
 if [[ "${ARCH_SETUP_CI:-}" != "1" ]]; then
     install_aur_packages "balena-etcher"
 fi
+
+install_aur_packages "bruno"

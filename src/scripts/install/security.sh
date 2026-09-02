@@ -34,6 +34,16 @@ fi
 
 install_pacman_packages "signal-desktop"
 
+ufw_docker_bin="/usr/local/bin/ufw-docker"
+if [[ ! -x "$ufw_docker_bin" ]]; then
+    ufw_docker_tmp="$TEMP_DIR/ufw-docker"
+    download_file_safe "https://github.com/chaifeng/ufw-docker/raw/master/ufw-docker" "$ufw_docker_tmp"
+    if [[ -f "$ufw_docker_tmp" ]]; then
+        chmod +x "$ufw_docker_tmp" 2>>"$ERROR_LOG_FILE" || true
+        sudo mv "$ufw_docker_tmp" "$ufw_docker_bin" 2>>"$ERROR_LOG_FILE" || true
+    fi
+fi
+
 security_tools=(
     "nmap"
     "perl-image-exiftool"

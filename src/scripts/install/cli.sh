@@ -15,11 +15,18 @@ cli_tools=(
     "eza"
     "fastfetch"
     "fd"
+    "fzf"
     "git"
     "htop"
     "jq"
+    "libsecret"
     "ripgrep"
+    "unzip"
     "vim"
     "wget"
+    "whois"
+    "zoxide"
 )
 install_pacman_packages "${cli_tools[@]}"
+
+install_aur_packages "tealdeer"
