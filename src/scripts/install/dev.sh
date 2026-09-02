@@ -43,6 +43,7 @@ dev_tools=(
     "github-cli"
     "shellcheck"
     "git"
+    "go"
 )
 install_pacman_packages "${dev_tools[@]}"
 
