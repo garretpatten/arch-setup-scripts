@@ -46,6 +46,15 @@ dev_tools=(
 )
 install_pacman_packages "${dev_tools[@]}"
 
+language_servers=(
+    "bash-language-server"
+    "lua-language-server"
+    "pyright"
+    "typescript-language-server"
+    "yaml-language-server"
+)
+install_pacman_packages "${language_servers[@]}"
+
 if command -v flatpak >/dev/null 2>&1 && flatpak remote-info flathub >/dev/null 2>&1; then
     flatpak install -y flathub com.getpostman.Postman 2>>"$ERROR_LOG_FILE" || true
 fi
