@@ -16,3 +16,6 @@ chown -R runner:runner /workspace
 
 su -s /bin/bash runner -c \
   'export ARCH_SETUP_CI=1; cd /workspace/src/scripts && bash master.sh || true'
+
+su -s /bin/bash runner -c \
+  'if ! command -v google-chrome >/dev/null 2>&1; then echo "❌ google-chrome not found"; exit 1; fi; google-chrome --version'

@@ -227,7 +227,8 @@ Brave (**AUR `brave-bin`**), VLC, Spotify (**`spotify-launcher`**), multimedia c
 
 #### 📊 **Productivity** (`install/productivity.sh`)
 
-LibreOffice, Zoom (**AUR**), KeePassXC, Redshift, Flameshot, Balena Etcher (**AUR**, skipped when **`ARCH_SETUP_CI=1`**).
+LibreOffice, Zoom (**AUR**), Google Chrome (**AUR**), KeePassXC, Redshift,
+Flameshot, Balena Etcher (**AUR**, skipped when **`ARCH_SETUP_CI=1`**).
 
 #### 🔒 **Security packages & payloads** (`install/security.sh`)
 

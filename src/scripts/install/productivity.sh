@@ -27,4 +27,4 @@ if [[ "${ARCH_SETUP_CI:-}" != "1" ]]; then
     install_aur_packages "balena-etcher"
 fi
 
-install_aur_packages "bruno"
+install_aur_packages "google-chrome" "bruno"
