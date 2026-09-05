@@ -1,0 +1,27 @@
+# CLI, security, and general pacman tools. Preflight installs git/curl first.
+
+bat
+btop
+curl
+eza
+fd
+flatpak
+fzf
+gcc
+github-cli
+htop
+jq
+make
+libsecret
+nmap
+openvpn
+pkgconf
+ripgrep
+shellcheck
+tree-sitter
+ufw
+unzip
+vim
+wget
+whois
+zoxide

@@ -1,0 +1,5 @@
+neovim
+python
+python-pynvim
+python-pip
+python-virtualenv

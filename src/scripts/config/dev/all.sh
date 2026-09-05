@@ -6,4 +6,5 @@ source "$DIR/../lib/env.sh"
 # shellcheck source=../lib/run.sh
 source "$DIR/../lib/run.sh"
 
-run_script "$DIR/all.sh" --cli
+run_script "$DIR/../dotfiles.sh"
+run_script "$DIR/gitconfig.sh"

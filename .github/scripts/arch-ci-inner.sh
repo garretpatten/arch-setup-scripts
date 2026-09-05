@@ -2,6 +2,8 @@
 # Runs inside Docker (Arch). Workspace is bind-mounted at /workspace.
 set -euo pipefail
 
+mode="${1:-master}"
+
 uid=$(stat -c '%u' /workspace)
 gid=$(stat -c '%g' /workspace)
 
@@ -14,8 +16,37 @@ echo 'runner ALL=(ALL) NOPASSWD: ALL' >/etc/sudoers.d/runner
 chmod 0440 /etc/sudoers.d/runner
 chown -R runner:runner /workspace
 
-su -s /bin/bash runner -c \
-  'export ARCH_SETUP_CI=1; cd /workspace/src/scripts && bash master.sh || true'
+run_setup() {
+    local script="$1"
+    su -s /bin/bash runner -c \
+        "export ARCH_SETUP_CI=1; cd /workspace/src/scripts && bash ${script} || true"
+}
 
-su -s /bin/bash runner -c \
-  'if ! command -v google-chrome >/dev/null 2>&1; then echo "❌ google-chrome not found"; exit 1; fi; google-chrome --version'
+run_validation() {
+    local validator="$1"
+    su -s /bin/bash runner -c \
+        "cd /workspace && ./scripts/${validator}"
+}
+
+case "$mode" in
+    cli)
+        run_setup 'run-install.sh cli'
+        run_validation 'validate-installs-cli.sh'
+        ;;
+    config)
+        run_setup 'run-config.sh'
+        run_validation 'validate-config-only.sh'
+        ;;
+    all | full)
+        run_setup 'run-install.sh all'
+        run_validation 'validate-installs.sh'
+        ;;
+    master)
+        run_setup 'master.sh'
+        run_validation 'validate.sh'
+        ;;
+    *)
+        echo "Usage: $0 {cli|config|all|master}" >&2
+        exit 1
+        ;;
+esac

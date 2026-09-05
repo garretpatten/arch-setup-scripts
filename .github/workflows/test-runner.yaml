@@ -6,9 +6,12 @@ on:
   pull_request:
     branches: [master]
 
+permissions:
+  contents: read
+
 jobs:
-  test:
-    name: 'Test Arch Setup Scripts'
+  test-cli:
+    name: 'CLI-only install'
     runs-on: ubuntu-latest
     timeout-minutes: 60
 
@@ -20,19 +23,108 @@ jobs:
 
       - name: Make scripts executable
         run: |
-          chmod +x src/scripts/*.sh \
-            src/scripts/install/*.sh \
-            src/scripts/config/*.sh \
-            .github/scripts/*.sh
+          find src/scripts -name '*.sh' -exec chmod +x {} +
+          find scripts -name '*.sh' -exec chmod +x {} +
+          chmod +x .github/scripts/*.sh
 
-      - name: Pull Arch image and run setup
+      - name: Pull Arch image and run CLI install
         run: |
           docker pull archlinux:base-devel
           docker run --rm \
             -v "${GITHUB_WORKSPACE}:/workspace:rw" \
             -w /workspace \
             archlinux:base-devel \
-            bash /workspace/.github/scripts/arch-ci-inner.sh
+            bash /workspace/.github/scripts/arch-ci-inner.sh cli
+
+      - name: Check error log
+        working-directory: ${{ github.workspace }}
+        run: bash .github/scripts/check-setup-errors.sh
+
+  test-config:
+    name: 'Configuration run'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Make scripts executable
+        run: |
+          find src/scripts -name '*.sh' -exec chmod +x {} +
+          find scripts -name '*.sh' -exec chmod +x {} +
+          chmod +x .github/scripts/*.sh
+
+      - name: Pull Arch image and run config
+        run: |
+          docker pull archlinux:base-devel
+          docker run --rm \
+            -v "${GITHUB_WORKSPACE}:/workspace:rw" \
+            -w /workspace \
+            archlinux:base-devel \
+            bash /workspace/.github/scripts/arch-ci-inner.sh config
+
+      - name: Check error log
+        working-directory: ${{ github.workspace }}
+        run: bash .github/scripts/check-setup-errors.sh
+
+  test-full:
+    name: 'Full install'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Make scripts executable
+        run: |
+          find src/scripts -name '*.sh' -exec chmod +x {} +
+          find scripts -name '*.sh' -exec chmod +x {} +
+          chmod +x .github/scripts/*.sh
+
+      - name: Pull Arch image and run full install
+        run: |
+          docker pull archlinux:base-devel
+          docker run --rm \
+            -v "${GITHUB_WORKSPACE}:/workspace:rw" \
+            -w /workspace \
+            archlinux:base-devel \
+            bash /workspace/.github/scripts/arch-ci-inner.sh all
+
+      - name: Check error log
+        working-directory: ${{ github.workspace }}
+        run: bash .github/scripts/check-setup-errors.sh
+
+  test-master:
+    name: 'Master (install + config)'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Make scripts executable
+        run: |
+          find src/scripts -name '*.sh' -exec chmod +x {} +
+          find scripts -name '*.sh' -exec chmod +x {} +
+          chmod +x .github/scripts/*.sh
+
+      - name: Pull Arch image and run master
+        run: |
+          docker pull archlinux:base-devel
+          docker run --rm \
+            -v "${GITHUB_WORKSPACE}:/workspace:rw" \
+            -w /workspace \
+            archlinux:base-devel \
+            bash /workspace/.github/scripts/arch-ci-inner.sh master
 
       - name: Check error log
         working-directory: ${{ github.workspace }}

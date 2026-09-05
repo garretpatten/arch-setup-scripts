@@ -1,0 +1,8 @@
+# Third-party-style pacman packages for CLI/server tools.
+# On Arch these are official packages (no external repo required).
+
+containerd
+docker
+docker-compose
+nodejs
+npm

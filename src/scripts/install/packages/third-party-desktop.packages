@@ -1,0 +1,6 @@
+# Third-party-style packages for desktop/GUI apps.
+# AUR-only packages (Brave, Bruno) are installed in install/all.sh via yay.
+
+libappindicator-gtk3
+libayatana-appindicator
+signal-desktop

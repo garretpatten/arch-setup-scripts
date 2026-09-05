@@ -1,0 +1,14 @@
+base-devel
+composer
+docker
+docker-compose
+go
+gzip
+lua
+luarocks
+php
+php-mbstring
+php-xml
+php-zip
+ruby
+tar
