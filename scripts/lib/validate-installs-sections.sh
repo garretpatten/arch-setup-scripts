@@ -164,7 +164,7 @@ validate_shell() {
     check_pacman zsh-syntax-highlighting zsh-syntax-highlighting
     check_pacman ttf-font-awesome ttf-font-awesome
     check_pacman ttf-fira-code ttf-fira-code
-    check_pacman ttf-meslo-nerd ttf-meslo-nerd
+    check_path ttf-meslo-nerd /usr/share/fonts/meslo-nerd-font
 
     if command -v ghostty >/dev/null 2>&1; then
         pass ghostty "$(version_of ghostty --version)"

@@ -7,6 +7,9 @@ mode="${1:-master}"
 uid=$(stat -c '%u' /workspace)
 gid=$(stat -c '%g' /workspace)
 
+# Initialize pacman keyring so archlinux-keyring upgrades can be signed in fresh containers.
+pacman-key --init
+pacman-key --populate archlinux
 pacman -Syu --noconfirm
 pacman -S --needed --noconfirm git sudo base-devel
 
@@ -37,6 +40,13 @@ if command -v dockerd >/dev/null 2>&1; then
     for _ in $(seq 1 30); do
         if [[ -S /var/run/docker.sock ]]; then
             chmod 666 /var/run/docker.sock
+            break
+        fi
+        sleep 1
+    done
+    # Wait for the daemon to actually accept commands before continuing.
+    for _ in $(seq 1 30); do
+        if docker info >/dev/null 2>&1; then
             break
         fi
         sleep 1
