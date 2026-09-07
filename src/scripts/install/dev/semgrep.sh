@@ -1,3 +1,4 @@
 #!/bin/bash
-# Semgrep official install instructions: https://semgrep.dev/docs/getting-started/quickstart
-python3 -m pip install --user semgrep || true
+# Install semgrep via uv per https://docs.astral.sh/uv/guides/tools/
+export PATH="${HOME}/.local/bin:${PATH}"
+uv tool install semgrep 2>/dev/null || true

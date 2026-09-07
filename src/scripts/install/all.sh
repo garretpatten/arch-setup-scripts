@@ -10,6 +10,9 @@ source "$DIR/../lib/package-install.sh"
 # shellcheck source=../lib/parallel.sh
 source "$DIR/../lib/parallel.sh"
 
+# Ensure tools installed to ~/.local/bin (e.g. uv, semgrep) are discoverable.
+export PATH="${HOME}/.local/bin:${PATH}"
+
 INSTALL_MODE="${1:-all}"
 INSTALL_MODE="${INSTALL_MODE#-}"
 INSTALL_MODE="${INSTALL_MODE#-}"
@@ -84,8 +87,7 @@ if is_desktop; then
 fi
 
 echo "==> Installing dev and language packages..."
-# The official go toolchain conflicts with gcc-go; remove gcc-go so go can install.
-sudo pacman -R --noconfirm gcc-go 2>/dev/null || true
+run_script "$DIR/dev/go.sh"
 install_pacman_packages_from_file "$DIR/packages/lsp.packages"
 install_pacman_packages_from_file "$DIR/packages/dev.packages"
 
@@ -111,6 +113,9 @@ fi
 install_pacman_packages_from_file "$DIR/packages/lsp-optional.packages" optional
 
 run_script "$DIR/dev/git-credential-libsecret.sh"
+
+# Install uv synchronously so the asynchronous semgrep install can use it.
+run_script "$DIR/dev/uv.sh"
 
 echo "==> Initializing asynchronous downloads..."
 for script in "${ASYNC_SCRIPTS[@]}"; do
