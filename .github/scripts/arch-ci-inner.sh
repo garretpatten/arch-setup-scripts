@@ -52,7 +52,7 @@ run_setup() {
 run_validation() {
     local validator="$1"
     su -s /bin/bash runner -c \
-        "export ARCH_SETUP_CI=${ARCH_SETUP_CI} LANG=${LANG} LC_ALL=${LC_ALL}; sg docker -c 'cd /workspace && ./scripts/${validator}'"
+        "export ARCH_SETUP_CI=${ARCH_SETUP_CI:-1} LANG=${LANG} LC_ALL=${LC_ALL}; sg docker -c 'cd /workspace && ./scripts/${validator}'"
 }
 
 case "$mode" in
