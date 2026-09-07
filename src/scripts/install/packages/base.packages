@@ -15,10 +15,13 @@ make
 libsecret
 nmap
 openvpn
+perl-image-exiftool
 pkgconf
 ripgrep
 shellcheck
+tealdeer
 tree-sitter
+tree-sitter-cli
 ufw
 unzip
 vim

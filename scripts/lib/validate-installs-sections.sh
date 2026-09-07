@@ -30,7 +30,11 @@ validate_cli_packages() {
     check_version pkg-config pkg-config --version
     check_pacman libsecret libsecret
     check_version lazygit lazygit --version
-    check_version lazydocker lazydocker --version
+    if [[ "${ARCH_SETUP_CI:-}" == "1" ]]; then
+        pass lazydocker 'skipped in CI (AUR)'
+    else
+        check_version lazydocker lazydocker --version
+    fi
     check_version ripgrep rg --version
     check_pacman unzip unzip
     check_version vim vim --version
@@ -96,7 +100,9 @@ validate_dev() {
     fi
     check_version docker docker --version
     check_version docker-compose docker compose version
-    if docker info >/dev/null 2>&1; then
+    if [[ "${ARCH_SETUP_CI:-}" == "1" ]]; then
+        pass docker-daemon 'skipped in CI (no systemd)'
+    elif docker info >/dev/null 2>&1; then
         pass docker-daemon 'docker info'
     else
         fail docker-daemon 'docker info'
@@ -135,7 +141,11 @@ validate_security_cli() {
     check_version exiftool exiftool -ver
     check_version openvpn openvpn --version
     check_pacman ufw ufw
-    check_command zaproxy zaproxy
+    if [[ "${ARCH_SETUP_CI:-}" == "1" ]]; then
+        pass zaproxy 'skipped in CI (snap)'
+    else
+        check_command zaproxy zaproxy
+    fi
     check_path ufw-docker /usr/local/bin/ufw-docker
     check_path hacking-payloads "$HOME/Hacking/PayloadsAllTheThings"
     check_path hacking-seclists "$HOME/Hacking/SecLists"
@@ -169,7 +179,11 @@ validate_shell() {
     check_pacman zsh-syntax-highlighting zsh-syntax-highlighting
     check_pacman ttf-font-awesome ttf-font-awesome
     check_pacman ttf-fira-code ttf-fira-code
-    check_pacman ttf-meslo-nerd ttf-meslo-nerd
+    if [[ "${ARCH_SETUP_CI:-}" == "1" ]]; then
+        pass ttf-meslo-nerd 'skipped in CI (AUR)'
+    else
+        check_pacman ttf-meslo-nerd ttf-meslo-nerd
+    fi
 
     if command -v ghostty >/dev/null 2>&1; then
         pass ghostty "$(version_of ghostty --version)"

@@ -10,6 +10,14 @@ gid=$(stat -c '%g' /workspace)
 pacman -Syu --noconfirm
 pacman -S --needed --noconfirm git sudo base-devel
 
+# Ensure a UTF-8 locale is available; programs like btop fail without it.
+if ! grep -q '^en_US.UTF-8 UTF-8' /etc/locale.gen; then
+    echo 'en_US.UTF-8 UTF-8' >>/etc/locale.gen
+fi
+locale-gen
+export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
+
 groupadd -g "$gid" runner 2>/dev/null || true
 useradd -m -u "$uid" -g "$gid" runner 2>/dev/null || true
 echo 'runner ALL=(ALL) NOPASSWD: ALL' >/etc/sudoers.d/runner
@@ -19,13 +27,13 @@ chown -R runner:runner /workspace
 run_setup() {
     local script="$1"
     su -s /bin/bash runner -c \
-        "export ARCH_SETUP_CI=1; cd /workspace/src/scripts && bash ${script} || true"
+        "export ARCH_SETUP_CI=1 LANG=${LANG} LC_ALL=${LC_ALL}; cd /workspace/src/scripts && bash ${script} || true"
 }
 
 run_validation() {
     local validator="$1"
     su -s /bin/bash runner -c \
-        "cd /workspace && ./scripts/${validator}"
+        "export LANG=${LANG} LC_ALL=${LC_ALL}; cd /workspace && ./scripts/${validator}"
 }
 
 case "$mode" in

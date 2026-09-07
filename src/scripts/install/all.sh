@@ -115,7 +115,8 @@ run_script "$DIR/dev/git-credential-libsecret.sh"
 
 echo "==> Initializing asynchronous downloads..."
 for script in "${ASYNC_SCRIPTS[@]}"; do
-    ASYNC_PIDS+=("$(parallel_run_best_effort "$DIR/$script")")
+    parallel_run_best_effort "$DIR/$script"
+    ASYNC_PIDS+=("$!")
 done
 parallel_wait_pids_best_effort "asynchronous tasks" "${ASYNC_PIDS[@]}"
 echo "==> Asynchronous tasks completed."
@@ -123,7 +124,8 @@ echo "==> Asynchronous tasks completed."
 if is_desktop; then
     echo "==> Installing AUR desktop apps..."
     for script in "${AUR_DESKTOP_SCRIPTS[@]}"; do
-        AUR_PIDS+=("$(parallel_run_best_effort "$DIR/$script")")
+        parallel_run_best_effort "$DIR/$script"
+        AUR_PIDS+=("$!")
     done
     parallel_wait_pids_best_effort "AUR desktop apps" "${AUR_PIDS[@]}"
 
