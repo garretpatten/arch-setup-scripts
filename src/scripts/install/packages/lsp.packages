@@ -6,6 +6,7 @@ go
 gzip
 jdk-openjdk
 lua
+lua-language-server
 luarocks
 php
 php-mbstring

@@ -33,9 +33,13 @@ if ! command -v yay >/dev/null 2>&1; then
         "cd /tmp && rm -rf yay && git clone https://aur.archlinux.org/yay.git && cd yay && makepkg -si --noconfirm"
 fi
 
-# Ensure the runner can use Docker and start the daemon inside the privileged container.
 usermod -aG docker runner 2>/dev/null || true
-if command -v dockerd >/dev/null 2>&1; then
+
+# Docker is installed during run-setup; start the daemon afterwards when present.
+ensure_dockerd() {
+    if ! command -v dockerd >/dev/null 2>&1; then
+        return 0
+    fi
     dockerd >/tmp/dockerd.log 2>&1 &
     for _ in $(seq 1 30); do
         if [[ -S /var/run/docker.sock ]]; then
@@ -51,7 +55,7 @@ if command -v dockerd >/dev/null 2>&1; then
         fi
         sleep 1
     done
-fi
+}
 
 run_setup() {
     local script="$1"
@@ -68,18 +72,22 @@ run_validation() {
 case "$mode" in
     cli)
         run_setup 'run-install.sh cli'
+        ensure_dockerd
         run_validation 'validate-installs-cli.sh'
         ;;
     config)
         run_setup 'run-config.sh'
+        ensure_dockerd
         run_validation 'validate-config-only.sh'
         ;;
     all | full)
         run_setup 'run-install.sh all'
+        ensure_dockerd
         run_validation 'validate-installs.sh'
         ;;
     master)
         run_setup 'master.sh'
+        ensure_dockerd
         run_validation 'validate.sh'
         ;;
     *)
