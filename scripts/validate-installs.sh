@@ -4,7 +4,7 @@ set -uo pipefail
 
 cd "$(dirname "$0")/.." || exit 1
 
-export PATH="${HOME}/.cargo/bin:${HOME}/.local/bin:/usr/local/bin:${PATH}"
+export PATH="${HOME}/.cargo/bin:${HOME}/.local/bin:/usr/local/bin:/usr/bin/vendor_perl:${PATH}"
 
 # shellcheck source=lib/validate-common.sh
 source "$(dirname "$0")/lib/validate-common.sh"

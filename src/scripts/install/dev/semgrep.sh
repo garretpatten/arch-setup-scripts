@@ -1,2 +1,3 @@
 #!/bin/bash
-pip3 install --user semgrep || true
+# Semgrep official install instructions: https://semgrep.dev/docs/getting-started/quickstart
+python3 -m pip install --user semgrep || true

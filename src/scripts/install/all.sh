@@ -84,6 +84,8 @@ if is_desktop; then
 fi
 
 echo "==> Installing dev and language packages..."
+# The official go toolchain conflicts with gcc-go; remove gcc-go so go can install.
+sudo pacman -R --noconfirm gcc-go 2>/dev/null || true
 install_pacman_packages_from_file "$DIR/packages/lsp.packages"
 install_pacman_packages_from_file "$DIR/packages/dev.packages"
 
