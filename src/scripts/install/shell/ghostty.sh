@@ -1,3 +1,3 @@
 #!/bin/bash
 
-sudo pacman -S --needed --noconfirm ghostty 2>/dev/null || true
+sudo pacman -S --needed --noconfirm ghostty || true

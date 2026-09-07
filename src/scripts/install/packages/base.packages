@@ -17,6 +17,7 @@ nmap
 openvpn
 perl-image-exiftool
 pkgconf
+zaproxy
 ripgrep
 shellcheck
 tealdeer

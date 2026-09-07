@@ -24,6 +24,25 @@ echo 'runner ALL=(ALL) NOPASSWD: ALL' >/etc/sudoers.d/runner
 chmod 0440 /etc/sudoers.d/runner
 chown -R runner:runner /workspace
 
+# Build and install yay so AUR packages can be installed in CI.
+if ! command -v yay >/dev/null 2>&1; then
+    su -s /bin/bash runner -c \
+        "cd /tmp && rm -rf yay && git clone https://aur.archlinux.org/yay.git && cd yay && makepkg -si --noconfirm"
+fi
+
+# Ensure the runner can use Docker and start the daemon inside the privileged container.
+usermod -aG docker runner 2>/dev/null || true
+if command -v dockerd >/dev/null 2>&1; then
+    dockerd >/tmp/dockerd.log 2>&1 &
+    for _ in $(seq 1 30); do
+        if [[ -S /var/run/docker.sock ]]; then
+            chmod 666 /var/run/docker.sock
+            break
+        fi
+        sleep 1
+    done
+fi
+
 run_setup() {
     local script="$1"
     su -s /bin/bash runner -c \
@@ -33,7 +52,7 @@ run_setup() {
 run_validation() {
     local validator="$1"
     su -s /bin/bash runner -c \
-        "export LANG=${LANG} LC_ALL=${LC_ALL}; cd /workspace && ./scripts/${validator}"
+        "export ARCH_SETUP_CI=${ARCH_SETUP_CI} LANG=${LANG} LC_ALL=${LC_ALL}; sg docker -c 'cd /workspace && ./scripts/${validator}'"
 }
 
 case "$mode" in

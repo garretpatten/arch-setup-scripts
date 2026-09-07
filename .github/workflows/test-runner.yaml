@@ -30,7 +30,7 @@ jobs:
       - name: Pull Arch image and run CLI install
         run: |
           docker pull archlinux:base-devel
-          docker run --rm \
+          docker run --rm --privileged \
             -v "${GITHUB_WORKSPACE}:/workspace:rw" \
             -w /workspace \
             archlinux:base-devel \
@@ -60,7 +60,7 @@ jobs:
       - name: Pull Arch image and run config
         run: |
           docker pull archlinux:base-devel
-          docker run --rm \
+          docker run --rm --privileged \
             -v "${GITHUB_WORKSPACE}:/workspace:rw" \
             -w /workspace \
             archlinux:base-devel \
@@ -90,7 +90,7 @@ jobs:
       - name: Pull Arch image and run full install
         run: |
           docker pull archlinux:base-devel
-          docker run --rm \
+          docker run --rm --privileged \
             -v "${GITHUB_WORKSPACE}:/workspace:rw" \
             -w /workspace \
             archlinux:base-devel \
@@ -120,7 +120,7 @@ jobs:
       - name: Pull Arch image and run master
         run: |
           docker pull archlinux:base-devel
-          docker run --rm \
+          docker run --rm --privileged \
             -v "${GITHUB_WORKSPACE}:/workspace:rw" \
             -w /workspace \
             archlinux:base-devel \
