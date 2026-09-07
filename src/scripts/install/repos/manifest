@@ -1,0 +1,3 @@
+# Pacman/AUR repository setup manifest (no-op on Arch).
+# AUR packages are installed by install/all.sh via yay; pacman repos are managed
+# in /etc/pacman.conf. Lines are ignored.

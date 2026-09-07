@@ -1,20 +1,14 @@
-# Agent guide — arch-setup-scripts
+# Agent instructions
 
-Bash automation for Arch Linux development machines: modular install scripts,
-shared helpers, and a `src/dotfiles` git submodule. Changes should stay **idempotent**,
-**safe to re-run**, and compatible with **headless CI** (no GNOME session).
-
-## Repository layout
-
-| Path                   | Purpose                                                                                                                                              |
-| ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `src/scripts/`         | `utils.sh`, `master.sh`, `run-install.sh`, `run-config.sh`                                                                                           |
-| `src/scripts/install/` | pacman/AUR/Flatpak, third-party installers, repo clones (no `gsettings`/dotfiles)                                                                    |
-| `src/scripts/config/`  | Desktop defaults (GNOME Shell when applicable), home layout, UFW policy after packages, targeted dotfile copies into `~`, `~/.dotfiles_path`, `chsh` |
-| `src/scripts/utils.sh` | Helpers, `SCRIPTS_DIR`, paths, logging, safe copy/download                                                                                           |
-| `src/dotfiles/`        | Submodule — [garretpatten/dotfiles](https://github.com/garretpatten/dotfiles)                                                                        |
-| `src/assets/`          | Completion banner ASCII (`arch.txt`; Fastfetch-derived)                                                                                              |
-| `.github/workflows/`   | CI: `master.sh` in Arch Docker + quality workflows                                                                                                   |
+Arch Linux provisioning scripts under `src/scripts/`: Omarchy-style per-app install/config
+scripts, orchestrated by `master.sh`, `run-install.sh`, and `run-config.sh`.
+`run-install.sh` accepts `cli` (CLI-only) or `all` (CLI + desktop/native); npm
+shortcuts are `npm run install:cli`, `npm run install:all`, `npm run config`, and
+`npm run all`. The `src/dotfiles` submodule is maintained separately. **Never edit,
+commit, or bump `src/dotfiles` from this repo** unless the user explicitly asks.
+Consume it read-only via `link_dotfiles_xdg_config_dirs` in `config/dotfiles.sh`
+(symlinks each `src/dotfiles/config/<app>/` under `~/.config/`) and targeted file copies.
+`run-config.sh` and `master.sh` initialize/update submodules before running config.
 
 ## Dotfiles submodule
 
@@ -30,100 +24,89 @@ If a dotfiles change is needed:
 3. Commit the submodule pointer change:
    `git add src/dotfiles && git commit -m "Bump dotfiles submodule"`
 
-### Orchestration
+## Before you finish
 
-- **`master.sh`**: `install/pre-install.sh` → `config/system-config.sh` → `config/organizeHome.sh`
-  → `install/cli.sh` / `media.sh` / `productivity.sh` → `install/dev.sh` → `config/dev.sh`
-  → `install/security.sh` → `config/security.sh` → `install/shell.sh` → `install/post-install.sh`
-  → `config/shell.sh`.
-- **`run-install.sh`**: `install/` only (`$SCRIPTS_DIR/install`).
-- **`run-config.sh`**: `config/` only (`$SCRIPTS_DIR/config`).
-- **`npm run all`** / **`npm run installs`** / **`npm run config`** delegate to those scripts (**`npm install`** at repo root first).
+**Do not consider shell or workflow work complete until ShellCheck passes the same way CI does.**
 
-## Script conventions
-
-Scripts in **`install/`** and **`config/`**:
-
-1. `#!/bin/bash`, then `# shellcheck source=../utils.sh` and `source "$(dirname "$0")/../utils.sh"`.
-2. Scripts next to **`utils.sh`** use `# shellcheck source=utils.sh` and `source "$(dirname "$0")/utils.sh"`.
-
-3. Prefer helpers from **`utils.sh`** (`install_pacman_packages`, `install_aur_packages`, `copy_directory_safe`,
-   `download_file_safe`, `gsettings_ok`, …).
-
-4. Non-fatal style where the rest of the repo does: `|| true`, `2>>"$ERROR_LOG_FILE"`, **`log_error`**
-   from orchestrators only for stage failures.
-
-5. **Headless-safe**: **`gsettings`** only behind **`gsettings_ok`**; GNOME Shell-only
-   **`gsettings`** behind **`desktop_is_gnome`** (Hyprland and CI skip them);
-   **`config/security.sh`** exits quietly if **`ufw`** is not installed (**`npm run config`**
-   alone on a minimal box).
-
-Paths:
-
-- **`PROJECT_ROOT`** is the repo root (two levels above **`src/scripts/`**).
-- Dotfiles checkout: **`$PROJECT_ROOT/src/dotfiles`**. **`config/dev.sh`** and **`config/shell.sh`**
-  copy selective **`config/<app>/`** trees (parity with **`ubuntu-setup-scripts`**). **`home/.tmux.conf`**
-  in the submodule expects **`config/tmux/`** under **`~/.config`**; see **`src/dotfiles/README.md`**.
-  For every app: **`(cd src/dotfiles && ./setup.sh --link-xdg-config)`**.
-
-**Submodule workflow**: **`git submodule update --init --recursive src/dotfiles/`**. Content edits
-belong upstream in **dotfiles**; bump copies here when a new subtree is mandatory for provisioning.
-
-## Product and safety constraints
-
-- **Night Light** (`config/system-config.sh`, GNOME only) conflicts with **Redshift** (`install/productivity.sh`); on Hyprland use Redshift only.
-- **Hyprland**: set **`ARCH_SETUP_DESKTOP=hyprland`** when auto-detection fails (TTY before compositor install); do not install **`gnome-shell-extension-appindicator`** unless **`desktop_is_gnome`**.
-- **Security**: Verified downloads, **`download_file_safe`**, least-privilege dirs, **`config/security.sh`** **`ufw`** defaults.
-- **User impact**: Logout/login for **`docker`** group / default shell / GNOME tweaks.
-- **CI**: Set **`ARCH_SETUP_CI=1`** to skip flaky AUR targets (e.g. balena-etcher) in Docker.
-- No secrets or machine-local paths committed.
-
-## Testing and CI
-
-- **Test Runner**: `chmod +x` **`src/scripts/*.sh`**, **`install/*.sh`**, **`config/*.sh`**, then **`bash src/scripts/master.sh`**
-  inside **`archlinux:base-devel`** Docker; **`setup_errors.log`** must pass **`.github/scripts/check-setup-errors.sh`**.
-
-## Making changes
-
-| Task                               | Edit                                                                                              |
-| ---------------------------------- | ------------------------------------------------------------------------------------------------- |
-| Packages/installers/clones         | Matching **`install/*.sh`**                                                                       |
-| GNOME/Hyprland/session/user layout | **`config/system-config.sh`**, **`organizeHome.sh`**, **`install/pre-install.sh`** as appropriate |
-| Firewall                           | `config/security.sh` (policy) plus `install/security.sh` (install `ufw` first)                    |
-| Dotfile deploy                     | **`config/dev.sh`** / **`config/shell.sh`**                                                       |
-| Shared logic                       | **`utils.sh`**                                                                                    |
-
-## Commits and PRs
-
-Do not commit unless asked. PRs that touch **`gsettings`** or Dock: note manual Arch Desktop QA.
-
-## Verify before you finish
-
-Run the checks that match what you changed—**all of the following** still need to pass before work is done:
+From the repository root:
 
 ```bash
-npm install
+find src/scripts -name '*.sh' -print0 | xargs -0 shellcheck -x
+find scripts -name '*.sh' -print0 | xargs -0 shellcheck -x
+find .github/scripts -name '*.sh' -print0 | xargs -0 shellcheck -x
+```
 
+Uses `.shellcheckrc` (`external-sources=true`, `source-path=SCRIPTDIR`).
+
+### ShellCheck conventions
+
+- Leaf scripts under `install/` and `config/` should be plain commands; avoid
+  `source utils.sh` and wrapper functions.
+- Orchestrators (`master.sh`, `*/all.sh`) source `lib/env.sh`, `lib/run.sh`, and
+  `# shellcheck source=...` for any other `lib/*.sh` they use.
+- Do not use `A && B || C` for conditional execution (CI reports **SC2015**). Use
+  `if` / `then` / `fi` instead.
+- `|| true` on a single command is fine for best-effort provisioning.
+
+### Other CI linters
+
+`.github/workflows/quality-checks.yaml` also runs Prettier, markdownlint, and yamllint on
+pull requests. Prettier and markdownlint are installed via `npm ci`; yamllint is a Python
+tool. Run the relevant tools when you touch those file types:
+
+```bash
+npm ci
 npx prettier --check .
-shellcheck src/scripts/utils.sh \
-  src/scripts/master.sh \
-  src/scripts/run-install.sh \
-  src/scripts/run-config.sh \
-  src/scripts/install/*.sh \
-  src/scripts/config/*.sh
 npx markdownlint-cli2 "**/*.md" "#node_modules" "#src/dotfiles/node_modules"
 yamllint .github .yamllint .markdownlint.yaml
 ```
 
-| If you edited                                                                                     | Run (in addition to **`prettier`** / **`shellcheck`** when applicable)               |
-| ------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
-| Any **`*.md`** at repo root (not submodule)                                                       | **`markdownlint-cli2`** on those paths or the glob above                             |
-| Workflows, **`ISSUE_TEMPLATE`**, **`dependabot.yaml`**, **`.yamllint`**, **`.markdownlint.yaml`** | **`yamllint`** on the same paths, or `yamllint .github .yamllint .markdownlint.yaml` |
+### Test workflow
 
-Install **`yamllint`** locally if missing (for example `pip install yamllint`). CI’s **Quality Checks** workflow already runs **`yamllint`** on YAML and **`markdownlint`** on Markdown in PRs—local runs should pass before you finalize.
+`.github/workflows/test-runner.yaml` runs four jobs in `archlinux:base-devel` Docker:
 
-If you change **`src/dotfiles/`**, run the submodule’s tooling as well.
+- `test-cli`: `run-install.sh cli` → `scripts/validate-installs-cli.sh`
+- `test-config`: `run-config.sh` → `scripts/validate-config-only.sh`
+- `test-full`: `run-install.sh all` → `scripts/validate-installs.sh`
+- `test-master`: `master.sh` → `scripts/validate.sh` (full installs + config)
 
-## License
+GNOME gsettings scripts no-op without an active GNOME session.
 
-MIT — see [LICENSE](./LICENSE).
+## Layout
+
+| Path                                                        | Role                                                    |
+| ----------------------------------------------------------- | ------------------------------------------------------- |
+| `src/scripts/lib/env.sh`                                    | `PROJECT_ROOT`, `TEMP_DIR`                              |
+| `src/scripts/lib/run.sh`                                    | `run_script` helper (forwards extra args)               |
+| `src/scripts/lib/gnome-session.sh`                          | Skip GNOME config when not on GNOME                     |
+| `src/scripts/lib/zsh-login.sh`                              | `.zshrc` pass-cli guard for provisioning                |
+| `src/scripts/lib/git-submodules.sh`                         | Initialize/update submodules before config              |
+| `src/scripts/lib/package-install.sh`                        | `install_pacman_packages_from_file` / AUR helpers       |
+| `src/scripts/lib/package-maintain.sh`                       | pacman sync/cleanup helpers                             |
+| `src/scripts/install/all.sh`                                | Full install orchestrator (`--cli` for CLI-only)        |
+| `src/scripts/install/cli.sh`                                | Wrapper that runs `install/all.sh --cli`                |
+| `src/scripts/install/packages/*.packages`                   | pacman package lists (one per line)                     |
+| `src/scripts/install/packages/third-party-cli.packages`     | Docker/Node.js official packages                        |
+| `src/scripts/install/packages/third-party-desktop.packages` | Brave/Bruno/Signal packages (some AUR)                  |
+| `src/scripts/install/apps/pass-cli.sh`                      | Proton Pass CLI binary install                          |
+| `src/scripts/install/`                                      | `packages/`, `apps/`, `dev/`, `shell/`, `post-install/` |
+| `src/scripts/config/<category>/`                            | Dotfiles/GNOME/system config + `all.sh`                 |
+| `scripts/lib/validate-installs-sections.sh`                 | Shared install validation sections                      |
+| `scripts/lib/validate-config-sections.sh`                   | Shared config validation sections                       |
+| `scripts/validate-installs-cli.sh`                          | Validate CLI-only install outcomes                      |
+| `scripts/validate-installs.sh`                              | Validate full install outcomes                          |
+| `scripts/validate-config-only.sh`                           | Validate config-only outcomes                           |
+| `scripts/validate-config.sh`                                | Validate config after full install/master               |
+
+## Product and safety constraints
+
+- **Night Light** (`config/system/gnome-gsettings.sh`, GNOME only) conflicts with **Redshift** (`install/packages/productivity.packages`); on Hyprland use Redshift only.
+- **Hyprland**: set `ARCH_SETUP_DESKTOP=hyprland` when auto-detection fails (TTY before compositor install); do not install `gnome-shell-extension-appindicator` unless on GNOME.
+- **Security**: Verified downloads, least-privilege dirs, `config/security/ufw-rules.sh` UFW defaults.
+- **User impact**: Logout/login for `docker` group / default shell / GNOME tweaks.
+- **CI**: Set `ARCH_SETUP_CI=1` to skip flaky AUR targets (e.g. balena-etcher) in Docker.
+- No secrets or machine-local paths committed.
+
+## Commits
+
+Only commit when the user asks. Do not commit secrets.

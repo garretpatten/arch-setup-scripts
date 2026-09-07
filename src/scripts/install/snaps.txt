@@ -1,0 +1,6 @@
+# Snap packages (name [classic])
+# Snap is not native to Arch; these are no-oped by lib/snap-install.sh.
+# AUR/Flatpak equivalents are installed elsewhere.
+
+zoom-client classic zoom
+zaproxy classic

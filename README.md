@@ -1,388 +1,125 @@
-<!-- markdownlint-disable MD033 MD041 -->
+# Arch setup scripts
 
-<p align="center">
-    <img
-        src="https://img.shields.io/badge/Arch%20setup%20scripts-reproducible%20automation-1793D1?style=for-the-badge&logo=arch-linux&logoColor=white"
-        alt="Arch-branded badge: reproducible workstation automation"
-    />
-</p>
-
-<h1 align="center">Arch Setup Scripts</h1>
-
-<p align="center"><strong>Production-style Bash provisioning for standardized developer workstations.</strong></p>
-
-<p align="center">
-    Split <strong>install</strong> and <strong>configuration</strong> flows, audited helper patterns, submodule-backed dotfiles, and CI you can anchor release gates on—whether you onboard one laptop or fifty.
-</p>
-
-<p align="center">
-    <a href="./LICENSE"><img src="https://img.shields.io/github/license/garretpatten/arch-setup-scripts?style=flat-square" alt="License: MIT" /></a>
-    <a href="https://archlinux.org/"
-        ><img src="https://img.shields.io/badge/platform-Arch%20Linux-1793D1?style=flat-square&logo=arch-linux&logoColor=white" alt="Arch Linux"
-    /></a>
-    <img src="https://img.shields.io/badge/shell-bash-black?style=flat-square&logo=gnu-bash&logoColor=white" alt="Shell: Bash" />
-    <img src="https://img.shields.io/badge/infra-pacman%20%2B%20AUR%20%2B%20Flatpak-1793D1?style=flat-square&logo=arch-linux&logoColor=white" alt="Package flows: pacman, AUR, and Flatpak" />
-</p>
-
-<p align="center">
-    <a href="https://github.com/garretpatten/arch-setup-scripts/actions/workflows/test-runner.yaml"
-        ><img src="https://img.shields.io/github/actions/workflow/status/garretpatten/arch-setup-scripts/test-runner.yaml?branch=master&label=Arch%20CI&logo=github&style=flat-square" alt="Test runner workflow status"
-    /></a>
-    <a href="https://github.com/garretpatten/arch-setup-scripts/actions/workflows/quality-checks.yaml"
-        ><img src="https://img.shields.io/github/actions/workflow/status/garretpatten/arch-setup-scripts/quality-checks.yaml?branch=master&label=quality&logo=github&style=flat-square" alt="Quality checks workflow status"
-    /></a>
-    <a href="https://github.com/garretpatten/arch-setup-scripts/actions/workflows/security-checks.yaml"
-        ><img src="https://img.shields.io/github/actions/workflow/status/garretpatten/arch-setup-scripts/security-checks.yaml?branch=master&label=security&logo=github&style=flat-square" alt="Security checks workflow status"
-    /></a>
-</p>
-
-<p align="center">
-    ✓ Modular orchestration &nbsp;
-    ✓ Split install/config bundles &nbsp;
-    ✓ Linted Bash + docs in PR &nbsp;
-    ✓ Idempotent, rerunnable phases
-</p>
-
-<!-- markdownlint-enable MD033 MD041 -->
-
----
-
-## Overview
-
-Arch Setup Scripts automate a **baseline engineering stack**: security tooling, shells and terminals,
-development runtimes (Node, Docker, Neovim, and peers), GNOME or Hyprland-friendly desktop defaults,
-and a pinned **dotfiles** submodule for editor and tmux parity across machines. Scripts are tuned for clarity in
-reviews and predictable behavior in **Arch Docker** CI.
-
-## ✨ Features
-
-- **🔧 Automated Setup**: Complete system configuration with a single command
-- **🛡️ Security First**: Built-in security tools, firewall configuration, and
-  safe installation practices
-- **⚡ Optimized Performance**: Batch installations and smart caching for
-  faster execution
-- **🔄 Idempotent**: Safe to run multiple times without issues
-- **📝 Comprehensive Logging**: Detailed progress tracking and error reporting
-- **🎯 Modular Design**: Run individual components or orchestrators (`master.sh`)
-- **⚙️ Install vs configuration**: Category automation is split between
-  `src/scripts/install/` (pacman/AUR/Flatpak, third-party installers, clones) and
-  `src/scripts/config/` (`gsettings`, home layout, UFW policy, submodule
-  dotfiles, default shell). Use `npm run installs`, `npm run config`, or `npm run all`,
-  or invoke `run-install.sh` / `run-config.sh` directly.
-
-## 🚀 Quick Start
-
-### Prerequisites
-
-- **Arch Linux or Arch-based distribution** (EndeavourOS, Manjaro, etc.)
-- **GNOME, Hyprland, or headless/TTY** — GNOME Shell-only steps are skipped on Hyprland automatically
-- Internet connection
-- Sudo privileges
-
-### Installation
-
-1. **Clone the repository**
+Provisioning for a personal Arch Linux desktop: install scripts under
+`src/scripts/install/`, dotfiles and system config under `src/scripts/config/`,
+orchestrated by `master.sh`.
 
 ```bash
-git clone https://github.com/garretpatten/arch-setup-scripts
-cd arch-setup-scripts
+npm run all             # install + config
+npm run install:cli     # CLI-only install
+npm run install:all     # full install (CLI + desktop/native)
+npm run config          # config only (ensures submodules are up to date)
 ```
 
-1. **Install Node deps** (optional; enables `npm run` shortcuts below)
+Direct bash equivalents (from `src/scripts/`):
 
 ```bash
-npm install
+bash master.sh          # install + config
+bash run-install.sh cli # CLI-only install
+bash run-install.sh all # full install (default)
+bash run-config.sh      # config only
 ```
 
-1. **Update submodules** (for dotfiles)
-
-```bash
-git submodule update --init --remote --recursive src/dotfiles/
-```
-
-1. **Make scripts executable**
-
-```bash
-chmod +x src/scripts/*.sh \
-  src/scripts/install/*.sh \
-  src/scripts/config/*.sh
-```
-
-1. **Run the complete setup**
-
-```bash
-npm run all
-# or:
-./src/scripts/master.sh
-```
-
-### npm scripts
-
-| Command            | Runs                                                                                                       |
-| ------------------ | ---------------------------------------------------------------------------------------------------------- |
-| `npm run all`      | Full provisioning (`master.sh`): installs interleaved with configuration (see execution flow below).       |
-| `npm run installs` | Install bundle only (`run-install.sh`): packages and installers—no GNOME/dotfiles/config steps.            |
-| `npm run config`   | Configuration bundle only (`run-config.sh`): defaults, home layout, UFW defaults, submodule copies, shell. |
-
-Bash equivalents:
-
-```bash
-bash src/scripts/run-install.sh
-bash src/scripts/run-config.sh
-bash src/scripts/master.sh
-```
-
-Use **`npm run config`** when packages are already present but GNOME/dotfiles paths should be refreshed after updating the submodule.
+CI runs four jobs in `archlinux:base-devel` Docker:
+
+- `test-cli`: `run-install.sh cli` → `validate-installs-cli.sh`
+- `test-config`: `run-config.sh` → `validate-config-only.sh`
+- `test-full`: `run-install.sh all` → `validate-installs.sh`
+- `test-master`: `master.sh` → `validate.sh` (full installs + config)
+
+Each validation script confirms the expected binaries/packages and config outcomes
+for that run mode.
+
+## Package manager preference
+
+Each app uses one install path:
+
+1. **pacman** when the package is in the official repositories
+2. **yay/AUR** when pacman does not provide it (Brave, Bruno, Proton VPN/Pass, Zoom, Etcher)
+3. **Flatpak** where appropriate
+4. **Upstream binary** only when neither pacman, AUR, nor Flatpak applies (pass-cli, Cursor, Ollama)
+
+## Install layout
+
+| Path                          | Role                                                                   |
+| ----------------------------- | ---------------------------------------------------------------------- |
+| `install/preflight/`          | pacman sync, essentials (git, curl, base-devel, yay), timezone         |
+| `install/all.sh`              | Full install orchestrator (`--cli` for CLI-only mode)                  |
+| `install/cli.sh`              | Thin wrapper that runs `install/all.sh --cli`                          |
+| `install/packages/*.packages` | One pacman package per line; installed by `install/all.sh`             |
+| `install/repos/manifest`      | No-op placeholder (pacman repos live in `/etc/pacman.conf`)            |
+| `install/snaps.txt`           | Snap packages (no-oped on Arch; AUR/Flatpak alternatives used instead) |
+| `install/apps/`               | AUR installs, repo clones, and app-specific installers                 |
+| `install/dev/`                | nvm, language stacks, Docker, Neovim, rustup, gems, pip/npm tools      |
+| `install/shell/`              | Ghostty, Meslo font, Oh My Posh                                        |
+| `install/post-install/`       | pacman cleanup, Docker service, tldr cache, completion banner          |
+
+### Validation scripts (`scripts/`)
+
+| Script                     | Use with                                   |
+| -------------------------- | ------------------------------------------ |
+| `validate-installs-cli.sh` | After `run-install.sh cli`                 |
+| `validate-installs.sh`     | After `run-install.sh all` or `master.sh`  |
+| `validate-config-only.sh`  | After `run-config.sh`                      |
+| `validate-config.sh`       | After `master.sh` or full install + config |
+| `validate.sh`              | After `master.sh` (installs + config)      |
+
+### Package lists (`install/packages/`)
+
+| File                           | Contents                                                                                     |
+| ------------------------------ | -------------------------------------------------------------------------------------------- |
+| `base.packages`                | CLI and security tools (bat, fzf, github-cli, jq, ripgrep, tealdeer, ufw, nmap, exiftool, …) |
+| `shell.packages`               | zsh, tmux, fonts, plugins                                                                    |
+| `media.packages`               | vlc, ffmpeg                                                                                  |
+| `desktop.packages`             | GNOME Tweaks, shell extensions                                                               |
+| `productivity.packages`        | LibreOffice, KeePassXC, Redshift, Flameshot                                                  |
+| `lsp.packages`                 | Mason LSP runtimes (Go, Ruby, PHP, Lua, Docker, …)                                           |
+| `lsp-optional.packages`        | Julia (optional)                                                                             |
+| `dev.packages`                 | Neovim, Python                                                                               |
+| `griffo.packages`              | yazi, lazygit, lazydocker                                                                    |
+| `fastfetch.packages`           | fastfetch                                                                                    |
+| `third-party-cli.packages`     | Docker, Node.js (official Arch packages; no external repo needed)                            |
+| `third-party-desktop.packages` | Brave, Bruno, Signal Desktop, appindicator libs                                              |
+
+### Apps (`install/apps/`)
+
+Chrome, Proton VPN/Pass, Signal, Bruno, Zoom, Etcher, OWASP ZAP, ufw-docker,
+Hacking git clones, pass-cli — each script handles its own AUR package or binary
+when pacman lists are not enough.
+
+### Development (`install/dev/`)
+
+Node.js, nvm, Docker, rustup, Solargraph gem, Semgrep, Vue CLI, Cursor Agent CLI,
+Ollama, language servers.
+
+### Preflight & post-install
+
+- pacman sync, essentials, timezone (America/New_York)
+- Docker service enabled; UFW rules in `config/security/` (LocalSend, Docker DNS, ufw-docker)
+
+### Snaps
+
+Snap is not native to Arch. `install/apps/snaps.sh` and `lib/snap-install.sh` are
+best-effort/no-op; equivalent apps are installed from the AUR or Flatpak.
+
+## Explicitly not installed
+
+These are **not** provisioned by this repo (remove from old notes or other dotfiles if you still expect them):
+
+| Removed / never included                     | Notes                                                         |
+| -------------------------------------------- | ------------------------------------------------------------- |
+| **Sourcegraph CLI (`sg`)**                   | Removed; use Bruno or other tooling                           |
+| **Spotify**                                  | Not provisioned; install manually if needed                   |
+| GNOME apps via random snaps                  | Not provisioned                                               |
+| Full IDE bundles (VS Code:, JetBrains, etc.) | Dotfiles may reference extensions; install editors separately |
+| 1Password, Bitwarden, etc.                   | Use Proton Pass / KeePassXC paths above                       |
+
+## Configuration (`src/scripts/config/`)
+
+Symlinks and settings from `src/dotfiles` (submodule, read-only): `config/dotfiles.sh`
+symlinks each `config/<app>/` tree under `~/.config/` (including `zsh/` for OS-specific
+shell snippets); copies for shell home files and VS Code: settings. Covers Neovim, btop,
+fastfetch, Kitty/Alacritty/Ghostty, Git, GNOME gsettings (skipped in CI without a GNOME
+session), UFW defaults and rules (LocalSend, Docker DNS, ufw-docker), home directory layout.
 
-### Granular scripts
-
-Each category exists as **install** and/or **configuration** scripts (paths from repo root):
-
-```bash
-bash src/scripts/install/cli.sh
-bash src/scripts/install/dev.sh
-
-bash src/scripts/config/system-config.sh      # GNOME + sysctl (no extra packages)
-bash src/scripts/config/organizeHome.sh
-bash src/scripts/config/dev.sh               # Editors / XDG subtree + Git identity
-bash src/scripts/config/security.sh           # UFW defaults (requires `install/security.sh` first)
-bash src/scripts/config/shell.sh              # Submodule shell + terminal dotfiles (`~/.config/tmux`, etc.)
-```
-
-Prefer the orchestrators so ordering stays consistent (for example **`config/security.sh`** after **`install/security.sh`**, **`config/shell.sh`** after **`install/shell.sh`**, and **`install/post-install.sh`** docker/UFW touchpoints ahead of **`config/shell.sh`** when running a full provisioning pass).
-
-## Project structure
-
-```text
-arch-setup-scripts/
-├── src/
-│   ├── scripts/
-│   │   ├── utils.sh
-│   │   ├── master.sh          # Full run — interleaved installs + configuration
-│   │   ├── run-install.sh      # pacman/AUR/Flatpak/post-install hooks only
-│   │   ├── run-config.sh       # GNOME, home layout, firewall policy, dotfiles, shell
-│   │   ├── install/
-│   │   │   ├── pre-install.sh
-│   │   │   ├── cli.sh
-│   │   │   ├── media.sh
-│   │   │   ├── productivity.sh
-│   │   │   ├── dev.sh         # Languages, Docker, NeoVim, tooling (no submodule copies)
-│   │   │   ├── security.sh    # Packages, VPN/pass installs, clones (UFW separately)
-│   │   │   ├── shell.sh       # Terminal packages, fonts, Oh My Posh
-│   │   │   └── post-install.sh
-│   │   └── config/
-│   │       ├── system-config.sh
-│   │       ├── organizeHome.sh
-│   │       ├── dev.sh         # submodule `config/*` subsets + Git defaults + Vimrc + VS Code user settings path
-│   │       ├── security.sh    # UFW deny/enable + SSH
-│   │       └── shell.sh       # Ghostty/tmux/modular ~/.config paths, ~/.dotfiles_path, chsh if needed
-│   ├── dotfiles/              # submodule
-│   └── assets/
-└── ...
-```
-
-### Execution flow (`master.sh`)
-
-1. **`install/pre-install.sh`** — essential pacman packages, yay bootstrap, timezone if still UTC
-2. **`config/system-config.sh`** — GNOME defaults (when schemas/bus exist), GDM guest login, sysctl, logind
-3. **`config/organizeHome.sh`** — home folders and permissions
-4. **`install/cli.sh`** — Flatpak, Flathub, **`btop`**, **`fastfetch`**, other CLI pacman packages
-5. **`install/media.sh`**, **`install/productivity.sh`**
-6. **`install/dev.sh`** — Node/npm, NVM, Docker, NeoVim, Postman Flatpak, `semgrep`, `src` CLI
-7. **`config/dev.sh`** — copy editor/XDG subsets from **`src/dotfiles/config/`**, Git globals, Vimrc path, VS Code `settings.json` when missing
-8. **`install/security.sh`** — UFW/OpenVPN pacman, Proton tooling, Signal, pen-test packages, clones under `~/Hacking`
-9. **`config/security.sh`** — **`ufw` defaults** after the package exists
-10. **`install/shell.sh`** — Zsh/Tmux/fonts/Ghostty/Oh My Posh
-11. **`install/post-install.sh`** — `pacman -Syu`/docker group/banner (**UFW `--force enable` stays best-effort here too**)
-12. **`config/shell.sh`** — **`home/`** dotfiles (**`home/.tmux.conf`** pulls in **`~/.config/tmux/includes/base.conf`** once **`config/tmux/`** lands under **`~/.config`**), **`~/.dotfiles_path`** for **`home/zsh/arch.zsh`**, `chsh` when possible
-
----
-
-## 📋 What gets installed vs configured
-
-The lists below mirror the **`install/`** and **`config/`** split; open each file for exact commands.
-
-### **`install/` bundle**
-
-#### 🧰 **Bootstrap** (`install/pre-install.sh`)
-
-- Full system sync; toolchain packages (`git`, `curl`, `wget`, `gnupg`, `base-devel`, etc.).
-- Bootstraps **`yay`** from AUR when missing.
-- Sets timezone away from **`UTC`** toward **`America/New_York`** when still UTC.
-
-#### 🛠️ **CLI Tools** (`install/cli.sh`)
-
-- Flatpak + Flathub.
-- Essentials: **`bat`**, **`btop`**, **`curl`**, **`eza`**, **`fastfetch`**, **`fd`**, **`git`**, **`htop`**, **`jq`**, **`ripgrep`**, **`vim`**, **`wget`**.
-
-#### 💻 **Development packages** (`install/dev.sh`)
-
-- Node.js **`nodejs`** / **`npm`** from official repos, NVM install script when missing,
-  **`@vue/cli`** globally, **`python`** toolchain, Docker + Compose,
-  **`neovim`**, **`gh`**, **`shellcheck`**, **`semgrep-bin`** (AUR), **`src`** (Sourcegraph), Postman (**Flatpak**).
-
-#### 🎬 **Media** (`install/media.sh`)
-
-Brave (**AUR `brave-bin`**), VLC, Spotify (**`spotify-launcher`**), multimedia codec bundles, **`ttf-ms-fonts`** (AUR).
-
-#### 📊 **Productivity** (`install/productivity.sh`)
-
-LibreOffice, Zoom (**AUR**), Google Chrome (**AUR**), KeePassXC, Redshift,
-Flameshot, Balena Etcher (**AUR**, skipped when **`ARCH_SETUP_CI=1`**).
-
-#### 🔒 **Security packages & payloads** (`install/security.sh`)
-
-- **`ufw`** and **`openvpn`** pacman packages (rules live in **`config/security.sh`**).
-- Proton VPN GTK (**AUR**), Proton Pass desktop + CLI, Signal desktop, **`nmap`**, **`exiftool`**, **OWASP ZAP**.
-- Optionally clones **`PayloadsAllTheThings`** / **`SecLists`** into **`~/Hacking`** (directory expected from **`config/organizeHome.sh`** in a typical full run).
-
-#### 🐚 **Shell tooling** (`install/shell.sh`)
-
-Zsh plugins, **`tmux`**, Meslo/Fira/powerline fonts plus Nerd Font drop, **`ghostty`** package,
-Oh My Posh binary + theme stash under **`/usr/share/oh-my-posh/themes`** when empty.
-
-#### 🏁 **Post maintenance** (`install/post-install.sh`)
-
-`pacman -Syu`, Docker systemd + **`docker`** group enrollment, **`ufw`** best-effort enable, and a completion banner (`src/assets/arch.txt`, Arch ASCII derived from [fastfetch](https://github.com/fastfetch-cli/fastfetch) with color tokens removed for plain terminals).
-
-### **`config/` bundle**
-
-#### 🏠 **Home layout** (`config/organizeHome.sh`)
-
-- Drops empty **`Music`/`Public`/`Templates`** where applicable.
-- Creates **`~/Projects`**, **`~/Hacking`**, **`~/AppImages`**, **`~/Projects/opensource`** / **`personal`**, adjusts **`Scripts`/`Hacking`** permissions.
-
-#### ⚙️ **Desktop & system** (`config/system-config.sh`)
-
-- **GTK / shared gsettings** (when schemas and D-Bus exist): dark mode, clocks, peripherals, Nautilus, screenshots — applies on Hyprland when those schemas are installed.
-- **GNOME Shell only** (auto-detected, or **`ARCH_SETUP_DESKTOP=gnome`**): Dash to Dock, Night Light, lock/privacy, search providers. Skipped on Hyprland — use **Redshift** from **`install/productivity.sh`** instead.
-- **Hyprland**: no GNOME Shell packages or extensions are required; **`install/security.sh`** omits **`gnome-shell-extension-appindicator`** unless GNOME Shell is the target desktop.
-- **sudo**: **`AllowGuest=false`** in **`gdm`** / **`sddm`** when present, **`logind`** lid snippet, sysctl TCP keepalive drop-in.
-
-Minimal/CI runners without a desktop skip **`gsettings`** and GNOME-only steps safely.
-
-Set **`ARCH_SETUP_DESKTOP=hyprland`** or **`ARCH_SETUP_DESKTOP=gnome`** when auto-detection is wrong (for example first run from a TTY before your compositor packages are installed).
-
-#### 💻 **Editor & Git prefs** (`config/dev.sh`)
-
-- Copies a **focused set** from **`src/dotfiles/config/`** into **`~/.config/`**: **`nvim`**, **`btop`**, **`fastfetch`**, **`alacritty`**, **`kitty`**, **`zellij`** (trees skipped when **`~/.config/<app>/`** already exists).
-- Copies **`home/.vimrc`** and VS Code **`User/settings.json`** when missing (**`~/.config/Code/User`** on Linux).
-- Seeds **`~/.gitconfig`** **only when absent** with global credential helper + identity defaults matching the legacy script behavior.
-
-#### 🔒 **UFW posture** (`config/security.sh`)
-
-`ufw reset`, deny incoming / allow outgoing, allow **`ssh`**, force enable (expects **`install/security.sh`** to have installed **`ufw`** first).
-
-#### 🐚 **Shell dotfiles & terminal configs** (`config/shell.sh`)
-
-- Copies **`Ghostty`**, **`oh-my-posh`**, and the **modular `config/tmux/`** subtree into **`~/.config`** (tmux **`source-file`** layout — see **`src/dotfiles/README.md`**).
-- Copies **`home/.tmux.conf`**, **`home/.zshrc`**, optional **`home/.bashrc`** when missing.
-- Maintains **`~/.dotfiles_path`** so **`home/.zshrc`** resolves **`DOTFILES`**; runs **`chsh`** when possible.
-
-**Full symlink mirror**: from **`src/dotfiles`**, **`./setup.sh --link-xdg-config`** installs every **`config/<app>/`** tree under **`$XDG_CONFIG_HOME`** ([dotfiles README](https://github.com/garretpatten/dotfiles/blob/master/README.md)). Parent **`config/`** scripts still provision the subset above for first-touch machines.
-
-Other runtime actions people often treat as configuration still live with installs for ordering reasons: **`install/post-install.sh`** enables Docker/`ufw`; **`npm run installs`** omits **`config/`** entirely so run **`npm run config`** afterward for dotfiles parity.
-
-## 📊 Monitoring & Logs
-
-After installation, check:
-
-- **Error Log**: `setup_errors.log` - Centralized error tracking
-- **Summary Report**: `setup_summary.txt` - Installation status overview
-- **Console Output**: Real-time progress with color-coded messages
-
-## ⚠️ Post-Installation Notes
-
-1. **Restart Required**: Log out and back in for shell and group changes
-1. **GNOME / desktop**: Run provisioning from a terminal inside your session, or
-   expect a logout/reboot for some changes. **`system-config.sh`** does not restart
-   **`systemd-logind`** while a graphical session is active (restarting it logs you out).
-   Lid-switch settings from a first-time drop-in apply after reboot if you were logged in.
-1. **GNOME / gsettings**: Night Light and other preferences apply when the script runs
-   with a live D-Bus session (`gsettings_ok`); re-login if you ran headless first.
-1. **Docker**: User added to docker group (logout required for effect)
-1. **Firewall**: UFW enabled with SSH access allowed
-1. **Night Light vs Redshift**: On **GNOME**, Night Light from **`config/system-config.sh`**
-   conflicts with **Redshift** from **`install/productivity.sh`** — pick one. On **Hyprland**, use **Redshift**
-   (Night Light gsettings are not applied).
-1. **Manual Setup**: Some applications (like Proton Pass, ProtonVPN) may require
-   additional configuration
-
-## 🔍 Troubleshooting
-
-### Common Issues
-
-**Script fails with permission errors:**
-
-```bash
-# Ensure scripts are executable
-chmod +x src/scripts/*.sh \
-  src/scripts/install/*.sh \
-  src/scripts/config/*.sh
-```
-
-**Package installation fails:**
-
-```bash
-# Refresh package databases manually
-sudo pacman -Syu
-# Then re-run the script
-```
-
-**Docker commands require sudo:**
-
-```bash
-# Log out and back in, or run:
-newgrp docker
-```
-
-**Shell doesn't change to Zsh:**
-
-```bash
-# Manually change shell
-chsh -s $(which zsh)
-# Then log out and back in
-```
-
-**Black screen, logout during setup, or frozen terminal after login:**
-
-Older runs restarted **`systemd-logind`** on every **`system-config.sh`** invocation,
-which ends the GNOME session. If the default shell is Zsh and the terminal hangs,
-switch to a TTY (**Ctrl+Alt+F3**), then restore Bash or fix **`~/.zshrc`** (for example
-comment out **`pass-cli`** / Proton Pass lines until Pass is configured):
-
-```bash
-chsh -s /bin/bash
-```
-
-### Getting Help
-
-- Check `setup_errors.log` for detailed error information
-- Review `setup_summary.txt` for installation status
-- Ensure you're running on a supported Arch-based distribution
-- Verify internet connection for package downloads
-
-## 🛡️ Security Features
-
-- **GPG / signature verification** for AUR builds (via makepkg/yay)
-- **Automatic firewall configuration** with secure defaults
-- **Safe temporary file handling** with automatic cleanup
-- **Principle of least privilege** for directory permissions
-
-## Community
-
-| Resource                                | Use                                         |
-| --------------------------------------- | ------------------------------------------- |
-| [Code of Conduct](./CODE_OF_CONDUCT.md) | Expected behavior in issues and PRs         |
-| [Contributing](./CONTRIBUTING.md)       | Branching, checks, submodule notes          |
-| [Security policy](./SECURITY.md)        | Vulnerability reporting (not public issues) |
-
-## Maintainers
-
-[@garretpatten](https://github.com/garretpatten/).
-
-Use the [issue templates](./.github/ISSUE_TEMPLATE/) for bugs and enhancements.
-
-## License
-
-This project is licensed under the [MIT License](./LICENSE).
+See [AGENTS.md](AGENTS.md) for contributor conventions, ShellCheck, and CI details.
