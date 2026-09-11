@@ -133,8 +133,9 @@ if is_desktop; then
     done
     parallel_wait_pids_best_effort "AUR desktop apps" "${AUR_PIDS[@]}"
 
-    # Brave and Bruno are AUR-only on Arch.
-    install_aur_packages brave-bin bruno zoom zaproxy
+    # Brave and Bruno are AUR-only on Arch; use prebuilt binaries because
+    # source AUR builds (electron) take hours in CI.
+    install_aur_packages brave-bin bruno-bin zoom
 fi
 
 run_script "$DIR/apps/pass-cli.sh"
