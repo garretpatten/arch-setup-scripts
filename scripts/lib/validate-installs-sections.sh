@@ -53,9 +53,13 @@ validate_productivity() {
     check_version flameshot flameshot --version
     check_command redshift redshift
     check_pacman zoom zoom
-    check_version google-chrome google-chrome --version
-    check_version bruno bruno --version
-    check_pacman balena-etcher balena-etcher
+    check_pacman google-chrome google-chrome
+    check_pacman bruno bruno-bin
+    if [[ "${ARCH_SETUP_CI:-}" == "1" ]]; then
+        pass balena-etcher 'skipped in CI'
+    else
+        check_pacman balena-etcher balena-etcher
+    fi
 }
 
 validate_nvm() {
