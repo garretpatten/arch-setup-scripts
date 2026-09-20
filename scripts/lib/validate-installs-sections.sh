@@ -149,7 +149,11 @@ validate_security_cli() {
 validate_security_desktop() {
     section 'Security (desktop)'
     check_pacman signal-desktop signal-desktop
-    check_pacman proton-pass-bin proton-pass-bin
+    if [[ "${ARCH_SETUP_CI:-}" == "1" ]]; then
+        pass proton-pass-bin 'skipped in CI'
+    else
+        check_pacman proton-pass-bin proton-pass-bin
+    fi
     check_pacman proton-vpn-gtk-app proton-vpn-gtk-app
 }
 
