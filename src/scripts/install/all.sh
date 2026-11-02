@@ -94,7 +94,7 @@ install_pacman_packages_from_file "$DIR/packages/dev.packages"
 echo "==> Installing extra packages..."
 install_pacman_packages_from_file "$DIR/packages/fastfetch.packages"
 # lazydocker is AUR; lazygit and yazi are official.
-install_pacman_packages_from_file "$DIR/packages/griffo.packages" optional
+install_pacman_packages_from_file "$DIR/packages/extra-cli.packages" optional
 install_aur_packages lazydocker
 
 if is_desktop; then
