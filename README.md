@@ -76,7 +76,7 @@ Each app uses one install path:
 | `lsp.packages`                 | Mason LSP runtimes (Go, Ruby, PHP, Lua, Docker, …)                                           |
 | `lsp-optional.packages`        | Julia (optional)                                                                             |
 | `dev.packages`                 | Neovim, Python                                                                               |
-| `griffo.packages`              | yazi, lazygit, lazydocker                                                                    |
+| `extra-cli.packages`           | yazi, lazygit, lazydocker                                                                    |
 | `fastfetch.packages`           | fastfetch                                                                                    |
 | `third-party-cli.packages`     | Docker, Node.js (official Arch packages; no external repo needed)                            |
 | `third-party-desktop.packages` | Brave, Bruno, Signal Desktop, appindicator libs                                              |
