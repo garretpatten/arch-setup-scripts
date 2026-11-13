@@ -1,5 +1,9 @@
 # Arch setup scripts
 
+[![License: MIT](https://img.shields.io/github/license/garretpatten/arch-setup-scripts?style=flat-square)](./LICENSE)
+[![CI](https://img.shields.io/github/actions/workflow/status/garretpatten/arch-setup-scripts/test-runner.yaml?branch=master&label=Arch%20CI&logo=github&style=flat-square)](https://github.com/garretpatten/arch-setup-scripts/actions/workflows/test-runner.yaml)
+[![Platform: Arch Linux](https://img.shields.io/badge/platform-Arch%20Linux-1793D1?style=flat-square&logo=archlinux&logoColor=white)](https://archlinux.org)
+
 Provisioning for a personal Arch Linux desktop: install scripts under
 `src/scripts/install/`, dotfiles and system config under `src/scripts/config/`,
 orchestrated by `master.sh`.
