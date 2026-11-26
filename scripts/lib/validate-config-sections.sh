@@ -16,6 +16,14 @@ validate_config_dotfiles() {
     check_path zshrc "$HOME/.zshrc"
 }
 
+validate_config_package_cooldowns() {
+    section 'Package cooldowns'
+    check_file_contains npm-cooldown "$HOME/.npmrc" 'min-release-age=7'
+    check_file_contains cargo-cooldown "$HOME/.cargo/config.toml" 'global-min-publish-age = "7 days"'
+    check_file_contains pip-cooldown "$HOME/.config/pip/pip.conf" 'uploaded-prior-to'
+    check_file_contains uv-cooldown "$HOME/.config/uv/uv.toml" 'exclude-newer'
+}
+
 validate_config_tmux() {
     section 'Tmux'
     check_path tmux-tpm "$HOME/.tmux/plugins/tpm/tpm"

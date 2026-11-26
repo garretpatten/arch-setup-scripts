@@ -70,6 +70,17 @@ check_path() {
     fi
 }
 
+check_file_contains() {
+    local name="$1"
+    local path="$2"
+    local pattern="$3"
+    if [[ -f "$path" ]] && grep -qF -- "$pattern" "$path"; then
+        pass "$name" "$path"
+    else
+        fail "$name" "missing '$pattern' in: $path"
+    fi
+}
+
 flatpak_installed() {
     local app="$1"
     flatpak list --app 2>/dev/null | grep -q "^${app}"

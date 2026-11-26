@@ -1,4 +1,7 @@
 # File copies only; XDG config dirs are symlinked via link_dotfiles_xdg_config_dirs in dotfiles.sh
 
 file home/.vimrc ~/.vimrc
+# .cargo is copied per file only: rustup owns ~/.cargo/bin, env, and registry.
+file home/.cargo/config.toml ~/.cargo/config.toml
+file home/.npmrc ~/.npmrc
 file vs-code/settings.json ~/.config/Code/User/settings.json
