@@ -54,7 +54,7 @@ If a dotfiles change is needed:
 
 ## Before you finish
 
-**Do not consider shell or workflow work complete until ShellCheck passes the same way CI does.**
+**Do not consider shell or workflow work complete until ShellCheck and shfmt pass the same way CI does.**
 
 From the repository root:
 
@@ -62,9 +62,20 @@ From the repository root:
 find src/scripts -name '*.sh' -print0 | xargs -0 shellcheck -x
 find scripts -name '*.sh' -print0 | xargs -0 shellcheck -x
 find .github/scripts -name '*.sh' -print0 | xargs -0 shellcheck -x
+find src/scripts -name '*.sh' -print0 | xargs -0 shfmt -d
+find scripts -name '*.sh' -print0 | xargs -0 shfmt -d
+find .github/scripts -name '*.sh' -print0 | xargs -0 shfmt -d
 ```
 
 Uses `.shellcheckrc` (`external-sources=true`, `source-path=SCRIPTDIR`).
+
+`shfmt -d` exits non-zero on formatting drift; apply fixes with `shfmt -w` on the
+files that fail. CI (`.github/workflows/quality-checks.yaml`) runs `shfmt -d`
+with defaults over **changed** shell files only, and shfmt reads the repo-root
+`.editorconfig`, which pins shell indentation to 4 spaces (`[*.sh]`
+`indent_style = space`, `indent_size = 4`). Keep new shell code in that style; do
+not switch files to shfmt's default tabs, and never replace the `.editorconfig`
+section to "fix" a shfmt diff.
 
 ### ShellCheck conventions
 
@@ -88,6 +99,10 @@ npx prettier --check .
 npx markdownlint-cli2 "**/*.md" "#node_modules" "#src/dotfiles/node_modules"
 yamllint .github .yamllint .markdownlint.yaml
 ```
+
+The same workflow also runs shfmt on changed `*.sh`/`*.bash`/`*.zsh` files (see above)
+and editorconfig-checker on every changed file because this repo has an `.editorconfig`
+— keep changed files compliant with the properties set there.
 
 ### Test workflow
 

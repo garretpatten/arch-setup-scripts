@@ -70,28 +70,28 @@ run_validation() {
 }
 
 case "$mode" in
-    cli)
-        run_setup 'run-install.sh cli'
-        ensure_dockerd
-        run_validation 'validate-installs-cli.sh'
-        ;;
-    config)
-        run_setup 'run-config.sh'
-        ensure_dockerd
-        run_validation 'validate-config-only.sh'
-        ;;
-    all | full)
-        run_setup 'run-install.sh all'
-        ensure_dockerd
-        run_validation 'validate-installs.sh'
-        ;;
-    master)
-        run_setup 'master.sh'
-        ensure_dockerd
-        run_validation 'validate.sh'
-        ;;
-    *)
-        echo "Usage: $0 {cli|config|all|master}" >&2
-        exit 1
-        ;;
+cli)
+    run_setup 'run-install.sh cli'
+    ensure_dockerd
+    run_validation 'validate-installs-cli.sh'
+    ;;
+config)
+    run_setup 'run-config.sh'
+    ensure_dockerd
+    run_validation 'validate-config-only.sh'
+    ;;
+all | full)
+    run_setup 'run-install.sh all'
+    ensure_dockerd
+    run_validation 'validate-installs.sh'
+    ;;
+master)
+    run_setup 'master.sh'
+    ensure_dockerd
+    run_validation 'validate.sh'
+    ;;
+*)
+    echo "Usage: $0 {cli|config|all|master}" >&2
+    exit 1
+    ;;
 esac
