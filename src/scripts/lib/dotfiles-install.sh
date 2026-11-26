@@ -68,9 +68,9 @@ install_dotfiles_from_manifest() {
         [[ "$line" =~ ^[[:space:]]*# ]] && continue
         [[ -z "${line// /}" ]] && continue
 
-        read -r kind rel_src dest <<< "$line"
+        read -r kind rel_src dest <<<"$line"
         if [[ "$kind" == file ]]; then
             copy_dotfile_file "$rel_src" "$dest"
         fi
-    done < "$manifest"
+    done <"$manifest"
 }

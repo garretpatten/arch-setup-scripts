@@ -9,12 +9,12 @@ ERROR_LOG="setup_errors.log"
 # Matches: echo "[$(date ...)] ERROR: ..." >> ERROR_LOG_FILE (utils.sh log_error)
 logged_errors=$(mktemp)
 grep -E '^\[[0-9]{4}-[0-9]{2}-[0-9]{2} [[:digit:]]{2}:[[:digit:]]{2}:[[:digit:]]{2}\] ERROR:' \
-  "$ERROR_LOG" >"$logged_errors" || true
+    "$ERROR_LOG" >"$logged_errors" || true
 
 if [[ -s "$logged_errors" ]]; then
-  echo '❌ Errors found:'
-  cat "$logged_errors"
-  rm -f "$logged_errors"
-  exit 1
+    echo '❌ Errors found:'
+    cat "$logged_errors"
+    rm -f "$logged_errors"
+    exit 1
 fi
 rm -f "$logged_errors"

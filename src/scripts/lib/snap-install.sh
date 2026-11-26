@@ -19,7 +19,7 @@ install_snaps_from_file() {
         [[ "$line" =~ ^[[:space:]]*# ]] && continue
         [[ -z "${line// /}" ]] && continue
 
-        read -r snap_name _ <<< "$line"
+        read -r snap_name _ <<<"$line"
         install_snap_if_missing "$snap_name"
-    done < "$snaps_file"
+    done <"$snaps_file"
 }
